@@ -122,6 +122,73 @@ def main():
            if welcome > 0:
                welcome = welcome - 1
                draw_text(screen,"ステージ""+""を攻略せよ".format(),300,180,font,CYAN)
+
+        elif idx == 2: # 画面切り替え
+            draw_dungeon(screen, fontS)
+            if 1 <= tmr and tmr <= 5:
+                h = 80*tmr
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 5:
+                stage = stage + 1
+                welcome = 15
+                make_dungeon()
+                put_event()
+            if 6 <= tmr and tmr <= 9:
+                h = 80*(10-tmr)
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 10:
+                idx = 1
+                
+        elif idx == 3:# プレイヤーのターン（入力待ち）
+            draw_battle(screen, fontS)
+            if tmr == 1: set_message("文字を")
+            if battle_command(screen, font, key) == True:
+                for char in dic_score[]:
+                    if moji == i
+                
+
+        elif idx == 4: # プレイヤーの攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                dmg = mojisuu
+            if 2 <= tmr and tmr <= 4:
+                screen.blit(imgEffect[0], [700-tmr*120, -100+tmr*120])
+            if tmr == 5:
+                emy_blink = 5
+                set_message(str(dmg)+"pts of damage!")
+            if tmr == 11:
+                emy_life = emy_life - dmg
+                if emy_life <= 0:
+                    emy_life = 0
+                    idx = 6
+                    tmr = 0
+            if tmr == 16:
+                idx = 3
+                tmr = 0
+
+        elif idx == 5: # 敵の攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                set_message("タイプミス")
+            if tmr == 5:
+                set_message(emy_name + " の攻撃")
+                emy_step = 30
+            if tmr == 9:
+                dmg = emy_str + random.randint(0, 9)
+                set_message(str(dmg)+"ダメージ!")
+                dmg_eff = 5
+                emy_step = 0
+            if tmr == 15:
+                pl_life = pl_life - dmg
+                if pl_life < 0:
+                    pl_life = 0
+                    idx = 7
+                    tmr = 0
+            if tmr == 20:
+                idx = 3
+                tmr = 0
        
         
         elif idx == 6: #勝利"  
