@@ -193,7 +193,9 @@ def main():
         
         elif idx == 6: #勝利"  
            if tmr == 1:
-               set_message("～"+"を倒しました")
+               set_message("～"+"を倒しました。プレイヤーの体力を10回復しました")
+               if pl_life <= 90:
+                   pl_life = pl_life + 10
            if tmr == 20:
                idx = 1
                tmr = 0
