@@ -197,6 +197,9 @@ def main():
                if pl_life <= 90:
                    pl_life = pl_life + 10
            if tmr == 20:
+               set_message("扉のカギを入手しました")
+               key = key + 1
+            if tmr == 28
                idx = 1
                tmr = 0
                
