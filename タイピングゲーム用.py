@@ -4,9 +4,8 @@ Created on Mon Jan  6 13:20:05 2025
 
 @author: futof
 """
-print ('a')
 
-import Tkinter.Tk
+import tkinter 
 import pygame
 import sys
 import random
@@ -19,7 +18,7 @@ RED   = (255,0,0)
 
 
 #画像の読み込み
-imgTitle = pygame.img.load("")   #タイトル画面について
+imgTitle = pygame.img.load("Tittle Screan.png")   #タイトル画面について
 
 #変数の宣言
 pl_x = 0
@@ -87,22 +86,42 @@ def set_messeage():
     for i in range():
         if message[i] == "":
             message[i] == msg
+
+def check_answer():
+    user_input = entry.get()
+    if user_input == "正解":
+        entry.config(fg ='white',bg = 'black')
+        result_label.config(text = "正解！", fg ='white',bg = 'black')
+    else:
+        entry.config(fg='red')
+        result_label.config(text="間違い！", fg='red')
+        
     
 
 
 def main():
     pygame.init()
-    pygame.set_caption("Taiping Game")
+    pygame.set_caption("タイピングゲーム")
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
+
+    root = tkinter.Tk()
+    root.title("文字の色を変更")
+    root.geometry("400x200")                        #テキスト入力欄を作成
+    global entry,result_label
+    entry = tkinter.Entry(width =20)
+    entry.place(x=10, y=10)
+    result_label = tk.Label(root,text = "", font =("Times New Roman",32)
+    result_label.pack()
     
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-        tmr =tmr +1                             #フレームごとにインクリメント
+                
+        tmr = tmr +1                             #フレームごとにインクリメント
         key = pygame.key.get_pressed()
     
         if idx == 0:                                   
@@ -143,10 +162,14 @@ def main():
                 
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen, fontS)
-            if tmr == 1: set_message("文字を")
-            if battle_command(screen, font, key) == True:
-                for char in dic_score[]:
-                    if moji == i
+            if tmr == 1: 
+                set_message("文字を")
+            if tmr == 15:
+                user_input = entry.get()                          #1/15追加
+                if user_input == "正解":
+                    label.config(fg = "BLACK")
+                elif:
+                    label.config(fg="RED")
                 
 
         elif idx == 4: # プレイヤーの攻撃
@@ -217,3 +240,11 @@ def main():
             elif tmr == 100: 
                 idx = 0
                 tmr = 0
+                
+        root.update()
+        pygame.display.update()
+        clock.tick(30)
+
+if __name__ == "__main__":
+    main()
+     
