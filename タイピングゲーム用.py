@@ -62,18 +62,18 @@ def create_floor():
         [1,1,1,1,2,1,1,1,1]
         ]
               
-    for y in range(7):
+    for y in range(6):
         for x in range(9):
             if make_floor[y][x] == 0:
-                bg.blit(floor,(x*110,y*80))
+                screen.blit(floor,(x*110,y*80))
             if make_floor[y][x] == 1:
-                bg.blit(wall,(x*110,y*80))
+                screen.blit(wall,(x*110,y*80))
             if make_floor[y][x] == 2:
-                bg.blit(player,(x*110,y*80))
+                screen.blit(player,(x*110,y*80))
             if make_floor[y][x] == 3:
-                bg.blit(enemies[stage-1],(x*110,y*80))
+                screen.blit(enemies[stage-1],(x*110,y*80))
             if make_floor[y][x] == 4:
-                bg.blit(door,(x*110,y*80))
+                screen.blit(door,(x*110,y*80))
                 
 
 
