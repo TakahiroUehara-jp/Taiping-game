@@ -4,7 +4,6 @@ Created on Mon Jan  6 13:20:05 2025
 
 @author: futof
 """
-print ('a')
 
 import Tkinter.Tk
 import pygame
@@ -19,7 +18,20 @@ RED   = (255,0,0)
 
 
 #画像の読み込み
-imgTitle = pygame.img.load("")   #タイトル画面について
+title = pygame.image.load("picture/title.png")   #タイトル画面について
+player = pygame.image.load("picture//player.png")
+wall = pygame.image.load("picture//wall.png")
+floor = pygame.image.load("picture//floor.png")
+door = pygame.image.load("picture//door.png")
+enemy1 = pygame.image.load("picture//enemy lv1.png")
+enemy2 = pygame.image.load("picture//enemy lv2.png")
+enemy3 = pygame.image.load("picture//enemy lv3.png")
+enemy4 = pygame.image.load("picture//enemy lv4.png")
+enemy5 = pygame.image.load("picture//enemy lv5.png")
+key1 = pygame.image.load("picture//key1.png")
+key2 = pygame.image.load("picture//key2.png")
+key3 = pygame.image.load("picture//key3.png")
+key4 = pygame.image.load("picture//key4.png")
 
 #変数の宣言
 pl_x = 0
@@ -37,19 +49,32 @@ pl_lifemax = 0
 pl_life = 0
 
 
+enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
-MAZE_W = 11                     #ダンジョンの幅・高さの詳細は未定
-MAZE_H = 9
-maze = []
-for y in range(MAZE_H):
-    maze.append([0]*MAZE_W)
-
-DUNGEON_W = MAZE_W*3
-DUNGEON_H = MAZE_H*3
-
-def make_dungeon() :              #ダンジョンの作成
-    XP = [0,1,0,-1]
-    YP = [-1,0,1,0]             #方向の設定
+#フロア生成
+def make_floor():
+    make_floor = [
+        [1,1,1,1,4,1,1,1,1],
+        [1,0,0,0,3,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,1,1,1,2,1,1,1,1]
+        ]
+              
+    for y in range(7):
+        for x in range(9):
+            if make_floor[y][x] == 0:
+                bg.blit(floor,[x*110,y*80])
+            if make_floor[y][x] == 1:
+                bg.blit(wall,[x*110,y*80])
+            if make_floor[y][x] == 2:
+                bg.blit(player,[x*110,y*80])
+            if make_floor[y][x] == 3:
+                bg.blit(enemies[stage-1],[x*110,y*80])
+            if make_floor[y][x] == 4:
+                bg.blit(door,[x*110,y*80])
+                
 
 
 def move_player():                #プレイヤーの移動
@@ -110,7 +135,7 @@ def main():
                screen.fill(BLACK)
                screen.blit(imgTitle,[40,60])
         if key[K_SPACE] == 1:
-           make_dungeon()
+           make_floor()
            stage = 1
            welcome = 20
            pl_lifemax = 100
