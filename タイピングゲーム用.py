@@ -17,7 +17,7 @@ BLACK = (0,0,0)
 RED   = (255,0,0)
 
 #画像の読み込み
-title = pygame.image.load("picture/title.png")
+title = pygame.image.load("picture//Tittle Screan.png")
 player = pygame.image.load("picture//player.png")
 wall = pygame.image.load("picture//wall.png")
 floor = pygame.image.load("picture//floor.png")
