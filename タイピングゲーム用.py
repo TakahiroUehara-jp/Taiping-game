@@ -43,6 +43,8 @@ welcome = 0
 
 emy_life = 0
 emy_lifemax =0
+emy_blink = 0
+dmg_eff = 0
 
 pl_lifemax = 0
 pl_life = 0
@@ -124,6 +126,9 @@ def check_answer():
 
 
 def main():
+    global idx,tmr,stage,welcome
+    global pl_life
+    global emy_life,emy_lifemax,emy_blink,dmg_eff
     pygame.init()
     pygame.set_caption("タイピングゲーム")
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
