@@ -81,13 +81,26 @@ def init_battle():
     emy_name 
     emy_life = emy_lifemax
 
-message = [""]*10
-def set_messeage():
-    for i in range():
-        if message[i] == "":
-            message[i] == msg
+message = [""]*10 　　　　　　　#1/16変更
+def init_message():
+    for i in range(10):
+        message[i] == ''
+        
+def set_message(msg):
+    for i in range (10):
+        if message[i] =='':
+            message[i] = msg
+            return
+        for i in range(9):
+            message[i] = message[i+1]
+        message[9] = msg
     
-
+def draw_text(bg,txt,x,y,fnt,col):
+    sur = fnt.render(txt,True, BLACK)
+    bg.blit(sur,[x+1,x+2])
+    sur = fnt.render(txt,True,col)
+    bg.blit(sur,[x,y])
+    
 
 def main():
     pygame.init()
