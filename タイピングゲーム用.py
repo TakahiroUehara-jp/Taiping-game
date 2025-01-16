@@ -11,10 +11,10 @@ RED   = (255,0,0)
 
 
 #画像の読み込み
-title = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/Tittle Screan.png")
-player = pygame.image.load("picture//player.png")
-wall = pygame.image.load("picture//wall.png")
-floor = pygame.image.load("picture//floor.png")
+title = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/Tittle Screan(2).png")
+player = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/player.png")
+wall = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/wall.png")
+floor = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/floor.png")
 door = pygame.image.load("picture//door.png")
 enemy1 = pygame.image.load("picture//enemy lv1.png")
 enemy2 = pygame.image.load("picture//enemy lv2.png")
@@ -61,20 +61,30 @@ def create_floor():
     for y in range(6):
         for x in range(9):
             if make_floor[y][x] == 0:
-                screen.blit(floor,(x*110,y*80))
+                screen.blit(floor,[x*110,y*80])
             if make_floor[y][x] == 1:
-                screen.blit(wall,(x*110,y*80))
+                screen.blit(wall,[x*110,y*80])
             if make_floor[y][x] == 2:
-                screen.blit(player,(x*110,y*80))
+                screen.blit(player,[x*110,y*80])
             if make_floor[y][x] == 3:
-                screen.blit(enemies[stage-1],(x*110,y*80))
+                screen.blit(enemies[stage-1],[x*110,y*80])
             if make_floor[y][x] == 4:
-                screen.blit(door,(x*110,y*80))
+                screen.blit(door,[x*110,y*80])
                 
-
-def make_dungeon() :              #ダンジョンの作成
-    XP = [0,1,0,-1]
-    YP = [-1,0,1,0]             #方向の設定
+def draw_dungeon(bg): # ダンジョンを描画する
+    bg.fill(BLACK)
+    for y in range(6):
+        for x in range(9):
+            X = x*16
+            Y = y*16
+            dx = pl_x + x
+            dy = pl_y + y
+            if floor_map[dy][dx] == 0:
+                bg.blit(floor, [X, Y])
+            if floor_map[dy][dx] == 1:
+                bg.blit(wall, [X, Y])
+            if x == 0 and y == 0: # 主人公の表示
+                bg.blit(player, [X, Y])
 
 
 def move_player():                #プレイヤーの移動
@@ -102,6 +112,7 @@ def move_player():                #プレイヤーの移動
 
 def draw_text(bg,txt,x,y,fnt,col):
     sur = fnt.render(txt)
+    bg.blit(sur,(x,y))
 
 def init_battle():
     emy_name 
@@ -134,7 +145,7 @@ def main():
     global emy_life,emy_lifemax,emy_blink,dmg_eff
     pygame.init()
     pygame.display.set_caption("Taiping Game")
-    screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
+    screen = pygame.display.set_mode ((800,780))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
     fontS = pygame.font.Font(None,30) 
@@ -150,7 +161,7 @@ def main():
         if idx == 0:                                   
             if tmr == 1: 
                screen.fill(BLACK)
-               screen.blit(title,[30,50])
+               screen.blit(title,[10,5])
                pygame.display.update()
         if key[K_SPACE] == 1:
            create_floor()
@@ -162,6 +173,7 @@ def main():
            
         elif idx == 1:
            move_player(key)
+           draw_dungeon(screen,fontS)
            if welcome > 0:
                welcome = welcome - 1
                draw_text(screen,"ステージ""+""を攻略せよ".format(),300,180,font,CYAN)
@@ -175,7 +187,7 @@ def main():
             if tmr == 5:
                 stage = stage + 1
                 welcome = 15
-                make_dungeon()
+                create_floor()
                 put_event()
             if 6 <= tmr and tmr <= 9:
                 h = 80*(10-tmr)
