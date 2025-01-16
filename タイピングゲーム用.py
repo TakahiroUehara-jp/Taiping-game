@@ -1,11 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan  6 13:20:05 2025
-
-@author: futof
-"""
-
-import Tkinter.Tk
+import tkinter as tk
 import pygame
 import sys
 import random
@@ -18,7 +11,20 @@ RED   = (255,0,0)
 
 
 #画像の読み込み
-imgTitle = pygame.img.load("")   #タイトル画面について
+title = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/Tittle Screan.png")
+player = pygame.image.load("picture//player.png")
+wall = pygame.image.load("picture//wall.png")
+floor = pygame.image.load("picture//floor.png")
+door = pygame.image.load("picture//door.png")
+enemy1 = pygame.image.load("picture//enemy lv1.png")
+enemy2 = pygame.image.load("picture//enemy lv2.png")
+enemy3 = pygame.image.load("picture//enemy lv3.png")
+enemy4 = pygame.image.load("picture//enemy lv4.png")
+enemy5 = pygame.image.load("picture//enemy lv5.png")
+key1 = pygame.image.load("picture//key1.png")
+key2 = pygame.image.load("picture//key2.png")
+key3 = pygame.image.load("picture//key3.png")
+key4 = pygame.image.load("picture//key4.png")
 
 #変数の宣言
 pl_x = 0
@@ -31,20 +37,40 @@ welcome = 0
 
 emy_life = 0
 emy_lifemax =0
+emy_blink = 0
+dmg_eff = 0
 
 pl_lifemax = 0
 pl_life = 0
 
 
 
-MAZE_W = 11                     #ダンジョンの幅・高さの詳細は未定
-MAZE_H = 9
-maze = []
-for y in range(MAZE_H):
-    maze.append([0]*MAZE_W)
+enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
-DUNGEON_W = MAZE_W*3
-DUNGEON_H = MAZE_H*3
+#フロア生成
+def create_floor():
+    make_floor = [
+        [1,1,1,1,4,1,1,1,1],
+        [1,0,0,0,3,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,1],
+        [1,1,1,1,2,1,1,1,1]
+        ]
+              
+    for y in range(6):
+        for x in range(9):
+            if make_floor[y][x] == 0:
+                screen.blit(floor,(x*110,y*80))
+            if make_floor[y][x] == 1:
+                screen.blit(wall,(x*110,y*80))
+            if make_floor[y][x] == 2:
+                screen.blit(player,(x*110,y*80))
+            if make_floor[y][x] == 3:
+                screen.blit(enemies[stage-1],(x*110,y*80))
+            if make_floor[y][x] == 4:
+                screen.blit(door,(x*110,y*80))
+                
 
 def make_dungeon() :              #ダンジョンの作成
     XP = [0,1,0,-1]
@@ -86,15 +112,32 @@ def set_messeage():
     for i in range():
         if message[i] == "":
             message[i] == msg
+
+def check_answer():
+    user_input = entry.get()
+    if user_input == target_string.get():
+        result_label.config(text="正解！", fg="black")
+    else:
+        result_label.config(text="不正解", fg="red")
+    new_target()
+
+def new_target():
+    new_string = generate_random_string()
+    target_string.set(new_string)
+    entry.delete(0, tk.END)
     
 
 
 def main():
+    global idx,tmr,stage,welcome
+    global pl_life
+    global emy_life,emy_lifemax,emy_blink,dmg_eff
     pygame.init()
-    pygame.set_caption("Taiping Game")
+    pygame.display.set_caption("Taiping Game")
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
+    fontS = pygame.font.Font(None,30) 
     
     while True:
         for event in pygame.event.get():
@@ -107,9 +150,10 @@ def main():
         if idx == 0:                                   
             if tmr == 1: 
                screen.fill(BLACK)
-               screen.blit(imgTitle,[40,60])
+               screen.blit(title,[30,50])
+               pygame.display.update()
         if key[K_SPACE] == 1:
-           make_dungeon()
+           create_floor()
            stage = 1
            welcome = 20
            pl_lifemax = 100
@@ -121,14 +165,89 @@ def main():
            if welcome > 0:
                welcome = welcome - 1
                draw_text(screen,"ステージ""+""を攻略せよ".format(),300,180,font,CYAN)
+
+        elif idx == 2: # 画面切り替え
+            draw_dungeon(screen, fontS)
+            if 1 <= tmr and tmr <= 5:
+                h = 80*tmr
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 5:
+                stage = stage + 1
+                welcome = 15
+                make_dungeon()
+                put_event()
+            if 6 <= tmr and tmr <= 9:
+                h = 80*(10-tmr)
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 10:
+                idx = 1
+                
+        elif idx == 3:# プレイヤーのターン（入力待ち）
+            draw_battle(screen, fontS)
+            if tmr == 1: set_message("文字を")
+            if tmr == 15:
+                user_input = entry.get()
+                if user_input == "正解":  # ここで正解の判定を行います
+                    label.config(fg="black")  # 文字の色を黒色に変更します
+                else:
+                    label.config(fg="red")  # 不正解の場合は赤色に変更します
+                
+
+        elif idx == 4: # プレイヤーの攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                dmg = mojisuu
+            if 2 <= tmr and tmr <= 4:
+                screen.blit(imgEffect[0], [700-tmr*120, -100+tmr*120])
+            if tmr == 5:
+                emy_blink = 5
+                set_message(str(dmg)+"pts of damage!")
+            if tmr == 11:
+                emy_life = emy_life - dmg
+                if emy_life <= 0:
+                    emy_life = 0
+                    idx = 6
+                    tmr = 0
+            if tmr == 16:
+                idx = 3
+                tmr = 0
+
+        elif idx == 5: # 敵の攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                set_message("タイプミス")
+            if tmr == 5:
+                set_message(emy_name + " の攻撃")
+                emy_step = 30
+            if tmr == 9:
+                dmg = emy_str + random.randint(0, 9)
+                set_message(str(dmg)+"ダメージ!")
+                dmg_eff = 5
+                emy_step = 0
+            if tmr == 15:
+                pl_life = pl_life - dmg
+                if pl_life < 0:
+                    pl_life = 0
+                    idx = 7
+                    tmr = 0
+            if tmr == 20:
+                idx = 3
+                tmr = 0
        
         
         elif idx == 6: #勝利"  
            if tmr == 1:
-               set_message("～"+"を倒しました")
+               set_message("～"+"を倒しました。プレイヤーの体力を10回復しました")
+               if pl_life <= 90:
+                   pl_life = pl_life + 10
            if tmr == 20:
-               idx = 1
-               tmr = 0
+               set_message("扉のカギを入手しました")
+               key = key + 1
+           if tmr == 28:
+              idx = 1
+              tmr = 0
                
         elif idx == 7: #敗北
             if tmr == 1:
@@ -144,3 +263,7 @@ def main():
             elif tmr == 100: 
                 idx = 0
                 tmr = 0
+
+
+if __name__ == "__main__":
+    main()
