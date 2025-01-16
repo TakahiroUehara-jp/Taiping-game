@@ -47,31 +47,17 @@ pl_life = 0
 
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
-#フロア生成
-def create_floor():
-    make_floor = [
-        [1,1,1,1,4,1,1,1,1],
-        [1,0,0,0,3,0,0,0,1],
+def create_floor(): #フロア生成
+    floor_map = [
+        [1,1,1,1,2,1,1,1,1],
         [1,0,0,0,0,0,0,0,1],
         [1,0,0,0,0,0,0,0,1],
         [1,0,0,0,0,0,0,0,1],
-        [1,1,1,1,2,1,1,1,1]
+        [1,0,0,0,0,0,0,0,1],
+        [1,1,1,1,0,1,1,1,1]
         ]
-              
-    for y in range(6):
-        for x in range(9):
-            if make_floor[y][x] == 0:
-                screen.blit(floor,[x*110,y*80])
-            if make_floor[y][x] == 1:
-                screen.blit(wall,[x*110,y*80])
-            if make_floor[y][x] == 2:
-                screen.blit(player,[x*110,y*80])
-            if make_floor[y][x] == 3:
-                screen.blit(enemies[stage-1],[x*110,y*80])
-            if make_floor[y][x] == 4:
-                screen.blit(door,[x*110,y*80])
-                
-def draw_dungeon(bg): # ダンジョンを描画する
+         
+def draw_floor(bg):  #フロアを描画する
     bg.fill(BLACK)
     for y in range(6):
         for x in range(9):
@@ -83,33 +69,18 @@ def draw_dungeon(bg): # ダンジョンを描画する
                 bg.blit(floor, [X, Y])
             if floor_map[dy][dx] == 1:
                 bg.blit(wall, [X, Y])
-            if x == 0 and y == 0: # 主人公の表示
+            if x == 6 and y == 5 : # 主人公の表示
                 bg.blit(player, [X, Y])
 
-
-def move_player():                #プレイヤーの移動
-    global pl_x,pl_y,pl_d,idx,tmr 
-    x = pl_x
-    y = pl_y
-    if key[K_UP] == 1: 
-        pl_d = 0
-        if dungeon[pl_y-1][pl_x] != 2:
-          pl_y = pl_y - 1
-    if key[K_DOWN] == 1:
-        pl_d = 1
-        if dungeon[pl_y+1][pl_x] != 2:
-          pl_y = pl_y + 1
-    if key[K_LEFT] == 1: 
-        pl_d = 2
-        if dungeon[pl_y][pl_x-1] != 2:
-          pl_x = pl_x -1
-    if key[K_RIGHT] == 1: 
-        pl_d = 3 
-        if dungeon[pl_y][pl_x+1] != 2:
-          pl_x = pl_x + 1
-    idx = 1
-    tmr = 0      #フレームを初期値に
-
+            
+def put_event():
+    global pl_x, pl_y,pl_d
+        X = x*16
+        Y = y*16
+        if drow_floor[y][x] == 3:
+            screen.blit(enemies[stage-1],[X,Y])
+        if drow_floor[y][x] == 4:
+            screen.blit(door,[X,Y])
 def draw_text(bg,txt,x,y,fnt,col):
     sur = fnt.render(txt)
     bg.blit(sur,(x,y))
