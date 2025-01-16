@@ -134,7 +134,8 @@ def main():
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
-
+    fontS = pygame.font.Font(None,30)
+    
     root = tkinter.Tk()
     root.title("文字の色を変更")
     root.geometry("400x200")                        #テキスト入力欄を作成
@@ -143,6 +144,7 @@ def main():
     entry.place(x=10, y=10)
     result_label = tk.Label(root,text = "", font =("Times New Roman",32)
     result_label.pack()
+    root.mainloop()                        
     
     while True:
         for event in pygame.event.get():
