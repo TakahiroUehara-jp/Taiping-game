@@ -51,7 +51,7 @@ pl_life = 0
 
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
-def create_floor(screen, fontS):   #フロア生成
+def create_floor():
     floor_map = [
         [1,1,1,1,2,1,1,1,1],
         [1,0,0,0,0,0,0,0,1],
@@ -60,16 +60,7 @@ def create_floor(screen, fontS):   #フロア生成
         [1,0,0,0,0,0,0,0,1],
         [1,1,1,1,0,1,1,1,1]
         ]
-              
-    for y in range(6):
-        for x in range(9):
-            if floor_map[y][x] == 0:
-                bg.blit(floor,[x*110,y*80])
-            if floor_map[y][x] == 1:
-                bg.blit(wall,[x*110,y*80])
-            if floor_map[y][x] == 2:
-                bg.blit(door,[x*110,y*80])
-                
+         
 def draw_dungeon(bg): # ダンジョンを描画する
     bg.fill(BLACK)
     for y in range(6):
@@ -78,12 +69,12 @@ def draw_dungeon(bg): # ダンジョンを描画する
             Y = y*16
             dx = pl_x + x
             dy = pl_y + y
-            if dungeon[dy][dx] == 0:
+            if floor_map[dy][dx] == 0:
                 bg.blit(floor, [X, Y])
-            if dungeon[dy][dx] == 9:
-                bg.blit(fall, [X, Y])
+            if floor_map[dy][dx] == 1:
+                bg.blit(wall, [X, Y])
             if x == 0 and y == 0: # 主人公の表示
-                bg.blit(imgPlayer, [X, Y-8])
+                bg.blit(player, [X, Y])
 
 def put_event():        #床にイベントを配置する
     
