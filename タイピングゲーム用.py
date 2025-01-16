@@ -130,7 +130,7 @@ def main():
     global pl_life
     global emy_life,emy_lifemax,emy_blink,dmg_eff
     pygame.init()
-    pygame.set_caption("タイピングゲーム")
+    pygame.display.set_caption("タイピングゲーム")
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
