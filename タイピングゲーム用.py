@@ -5,7 +5,7 @@ Created on Mon Jan  6 13:20:05 2025
 @author: futof
 """
 
-import Tkinter.Tk
+import tkinter.Tk
 import pygame
 import sys
 import random
@@ -18,7 +18,7 @@ RED   = (255,0,0)
 
 
 #画像の読み込み
-title = pygame.image.load("picture/title.png")
+title = pygame.image.load("picture//Tittle Screan.png")
 player = pygame.image.load("picture//player.png")
 wall = pygame.image.load("picture//wall.png")
 floor = pygame.image.load("picture//floor.png")
@@ -51,54 +51,72 @@ pl_life = 0
 
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
-#フロア生成
-def create_floor():
-    make_floor = [
-        [1,1,1,1,4,1,1,1,1],
-        [1,0,0,0,3,0,0,0,1],
+def create_floor(screen, fontS):   #フロア生成
+    floor_map = [
+        [1,1,1,1,2,1,1,1,1],
         [1,0,0,0,0,0,0,0,1],
         [1,0,0,0,0,0,0,0,1],
         [1,0,0,0,0,0,0,0,1],
-        [1,1,1,1,2,1,1,1,1]
+        [1,0,0,0,0,0,0,0,1],
+        [1,1,1,1,0,1,1,1,1]
         ]
               
     for y in range(6):
         for x in range(9):
-            if make_floor[y][x] == 0:
-                screen.blit(floor,(x*110,y*80))
-            if make_floor[y][x] == 1:
-                screen.blit(wall,(x*110,y*80))
-            if make_floor[y][x] == 2:
-                screen.blit(player,(x*110,y*80))
-            if make_floor[y][x] == 3:
-                screen.blit(enemies[stage-1],(x*110,y*80))
-            if make_floor[y][x] == 4:
-                screen.blit(door,(x*110,y*80))
+            if floor_map[y][x] == 0:
+                bg.blit(floor,[x*110,y*80])
+            if floor_map[y][x] == 1:
+                bg.blit(wall,[x*110,y*80])
+            if floor_map[y][x] == 2:
+                bg.blit(door,[x*110,y*80])
                 
+def draw_dungeon(bg): # ダンジョンを描画する
+    bg.fill(BLACK)
+    for y in range(6):
+        for x in range(9):
+            X = x*16
+            Y = y*16
+            dx = pl_x + x
+            dy = pl_y + y
+            if dungeon[dy][dx] == 0:
+                bg.blit(floor, [X, Y])
+            if dungeon[dy][dx] == 9:
+                bg.blit(fall, [X, Y])
+            if x == 0 and y == 0: # 主人公の表示
+                bg.blit(imgPlayer, [X, Y-8])
+
+def put_event():        #床にイベントを配置する
+    
 
 
 def move_player():                #プレイヤーの移動
     global pl_x,pl_y,pl_d,idx,tmr 
+    if floor_map[pl_y][pl_x] == 3:
+        idx = 2
+    if floor_map[pl_y][pl_x] == 4:
+        idx = 1
+
     x = pl_x
     y = pl_y
     if key[K_UP] == 0: 
         pl_d = 0
-        if make_floor[pl_y-1][pl_x] != 1:
+        if floor_map[pl_y-1][pl_x] != 1:
           pl_y = pl_y - 1
     if key[K_DOWN] == 1:
         pl_d = 1
-        if make_floor[pl_y+1][pl_x] != 1:
+        if floor_map[pl_y+1][pl_x] != 1:
           pl_y = pl_y + 1
     if key[K_LEFT] == 1: 
         pl_d = 2
-        if make_floor[pl_y][pl_x-1] != 1:
+        if floor_map[pl_y][pl_x-1] != 1:
           pl_x = pl_x -1
     if key[K_RIGHT] == 1: 
         pl_d = 3 
-        if make_floor[pl_y][pl_x+1] != 1:
+        if floor_map[pl_y][pl_x+1] != 1:
           pl_x = pl_x + 1
     idx = 1
     tmr = 0      #フレームを初期値に
+
 
 def draw_text(bg,txt,x,y,fnt,col):
     sur = fnt.render(txt)
@@ -112,30 +130,48 @@ def set_messeage():
     for i in range():
         if message[i] == "":
             message[i] == msg
-    
+
+def check_answer():
+    user_input = entry.get()
+    if user_input == "正解":
+        entry.config(fg ='white',bg = 'black')
+        result_label.config(text = "正解！", fg ='white',bg = 'black')
+    else:
+        entry.config(fg='red')
+        result_label.config(text="間違い！", fg='red')
 
 
 def main():
     pygame.init()
-    pygame.set_caption("Taiping Game")
+    pygame.set_caption("タイピングゲーム")
     screen = pygame.display.set_mode ((880,720))    #後に調整する必要性あり
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,40)                #後に調整する必要性あり
+
+    root = tkinter.Tk()
+    root.title("文字の色を変更")
+    root.geometry("400x200")                        #テキスト入力欄を作成
+    global entry,result_label
+    entry = tkinter.Entry(width =20)
+    entry.place(x=10, y=10)
+    result_label = tk.Label(root,text = "", font =("Times New Roman",32)
+    result_label.pack()
     
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-        tmr =tmr +1                             #フレームごとにインクリメント
+                
+        tmr = tmr +1                             #フレームごとにインクリメント
         key = pygame.key.get_pressed()
     
         if idx == 0:                                   
             if tmr == 1: 
                screen.fill(BLACK)
-               screen.blit(imgTitle,[40,60])
+               screen.blit(title,[40,60])
         if key[K_SPACE] == 1:
-           make_floor()
+           create_floor()
            stage = 1
            welcome = 20
            pl_lifemax = 100
@@ -147,12 +183,88 @@ def main():
            if welcome > 0:
                welcome = welcome - 1
                draw_text(screen,"ステージ""+""を攻略せよ".format(),300,180,font,CYAN)
+
+        elif idx == 2: # 画面切り替え
+            create_floor(screen, fontS)
+            if 1 <= tmr and tmr <= 5:
+                h = 80*tmr
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 5:
+                stage = stage + 1
+                welcome = 15
+                create_floor()
+                put_event()
+            if 6 <= tmr and tmr <= 9:
+                h = 80*(10-tmr)
+                pygame.draw.rect(screen, BLACK, [0, 0, 880, h])
+                pygame.draw.rect(screen, BLACK, [0, 720-h, 880, h])
+            if tmr == 10:
+                idx = 1
+                
+        elif idx == 3:# プレイヤーのターン（入力待ち）
+            draw_battle(screen, fontS)
+            if tmr == 1: 
+                set_message("文字を")
+            if tmr == 15:
+                user_input = entry.get()                          #1/15追加
+                if user_input == "正解":
+                    label.config(fg = "BLACK")
+                elif:
+                    label.config(fg="RED")
+                
+
+        elif idx == 4: # プレイヤーの攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                dmg = mojisuu
+            if 2 <= tmr and tmr <= 4:
+                screen.blit(effect[0], [700-tmr*120, -100+tmr*120])
+            if tmr == 5:
+                emy_blink = 5
+                set_message(str(dmg)+"pts of damage!")
+            if tmr == 11:
+                emy_life = emy_life - dmg
+                if emy_life <= 0:
+                    emy_life = 0
+                    idx = 6
+                    tmr = 0
+            if tmr == 16:
+                idx = 3
+                tmr = 0
+
+        elif idx == 5: # 敵の攻撃
+            draw_battle(screen, fontS)
+            if tmr == 1:
+                set_message("タイプミス")
+            if tmr == 5:
+                set_message(emy_name + " の攻撃")
+                emy_step = 30
+            if tmr == 9:
+                dmg = emy_str + random.randint(0, 9)
+                set_message(str(dmg)+"ダメージ!")
+                dmg_eff = 5
+                emy_step = 0
+            if tmr == 15:
+                pl_life = pl_life - dmg
+                if pl_life < 0:
+                    pl_life = 0
+                    idx = 7
+                    tmr = 0
+            if tmr == 20:
+                idx = 3
+                tmr = 0
        
         
         elif idx == 6: #勝利"  
            if tmr == 1:
-               set_message("～"+"を倒しました")
+               set_message("～"+"を倒しました。プレイヤーの体力を10回復しました")
+               if pl_life <= 90:
+                   pl_life = pl_life + 10
            if tmr == 20:
+               set_message("扉のカギを入手しました")
+               key = key + 1
+            if tmr == 28
                idx = 1
                tmr = 0
                
@@ -170,3 +282,10 @@ def main():
             elif tmr == 100: 
                 idx = 0
                 tmr = 0
+                
+        root.update()
+        pygame.display.update()
+        clock.tick(30)
+
+if __name__ == "__main__":
+    main()
