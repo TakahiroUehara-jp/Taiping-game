@@ -34,8 +34,8 @@ key3 = pygame.image.load("picture\\key3.png")
 key4 = pygame.image.load("picture\\key4.png")
 
 #変数の宣言
-pl_x = 6
-pl_y = 10                      #プレイヤーの座標を管理
+pl_x = 5
+pl_y = 9                      #プレイヤーの座標を管理
 pl_d = 0                      #向き
 idx = 0
 tmr = 0
@@ -52,8 +52,6 @@ pl_life = 0
 
 
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
-
-pl_x, pl_y = 1, 1  # プレイヤーの初期タイル座標
 
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
