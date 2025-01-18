@@ -29,9 +29,9 @@ key3 = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game
 key4 = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture//key4.png")
 
 # サイズ調整
-player = pygame.transform.scale(player, (130, 130))  
-wall = pygame.transform.scale(wall, (130, 130))      
-floor = pygame.transform.scale(floor, (130, 130))    #
+player = pygame.transform.scale(player, (90, 90))  
+wall = pygame.transform.scale(wall, (90, 90))      
+floor = pygame.transform.scale(floor, (90, 90))    #
 
 
 #変数の宣言
@@ -65,22 +65,26 @@ enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 def create_floor(): #フロア生成
     global floor_map
     floor_map = [
-        [1,1,1,1,2,1,1,1,1],
-        [1,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,1],
-        [1,1,1,1,0,1,1,1,1]
-        ]
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ]
          
-def draw_floor(bg, fontS):  #フロアを描画する
+def draw_floor(bg):  #フロアを描画する
     bg.fill(BLACK)
-    for y in range(6):
-        for x in range(9):
-            X = x*130
-            Y = y*130
-            dx = pl_x + x
-            dy = pl_y + y
+    for y in range(10):
+        for x in range(10):
+            X = x*90
+            Y = y*90
+            dx = pl_x + x 
+            dy = pl_y + y 
             if floor_map[dy][dx] == 0:
                 bg.blit(floor, [X, Y])
             if floor_map[dy][dx] == 1:
@@ -92,11 +96,11 @@ def put_event():
     global pl_x, pl_y,pl_d
     for y in range(len(floor_map)):
         for x in range(len(floor_map[y])):
-            X = x*130
-            Y = y*130
-            if drow_floor[y][x] == 3:
-                screen.blit(enemies[stage-1],[X,Y])
-            if drow_floor[y][x] == 4:
+            X = x*90
+            Y = y*90
+            if draw_floor[y][x] == 3:
+                screen.blit(enemies[stage - 1],[X,Y])
+            if draw_floor[y][x] == 4:
                 screen.blit(door,[X,Y])
             
 def move_player(key): # 主人公の移動
@@ -218,6 +222,7 @@ def main():
                     pl_lifemax = 100
                     pl_life = pl_lifemax
                     idx = 1
+                    tmr = 0
                    
         tmr = tmr +1                             #フレームごとにインクリメント
         key = pygame.key.get_pressed()
@@ -231,10 +236,10 @@ def main():
            
         elif idx == 1:
            move_player(key)
-           draw_floor(screen,fontS)
+           draw_floor(screen)
            if welcome > 0:
                welcome = welcome - 1
-               draw_text(screen,"ステージ""+""を攻略せよ".format(stage),300,180,font,CYAN)
+               draw_text(screen,"ステージ"+str(stage)+"を攻略せよ".format(stage),300,180,font,CYAN)
            else:    
                put_event()
                if floor_map[pl_y][pl_x] == 4:  
