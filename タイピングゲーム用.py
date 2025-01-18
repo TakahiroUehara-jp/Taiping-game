@@ -12,7 +12,7 @@ CYAN = (0,255,255)
 
 
 #画像の読み込み
-title = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/Tittle Screan(2).png")
+title = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/Tittle Screan.png")
 player = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/player.png")
 wall = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/wall.png")
 floor = pygame.image.load("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/picture/floor.png")
