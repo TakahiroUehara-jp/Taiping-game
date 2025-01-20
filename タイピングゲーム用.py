@@ -120,7 +120,7 @@ def move_player(): #主人公の移動
     y = pl_y
     if key[K_UP] == 1:
         pl_d = 0
-        if floor_map[pl_y-1][pl_x] != 1: #１が壁？
+        if floor_map[pl_y-1][pl_x] != 1:
             pl_y = pl_y - 1
     if key[K_DOWN] == 1:
         pl_d = 1
@@ -231,8 +231,7 @@ def main():
                     pl_life = pl_lifemax
                     idx = 1
                    
-        tmr += 1
-        screen.fill(BLACK)                             #フレームごとにインクリメント
+        tmr = tmr + 1                            #フレームごとにインクリメント
     
         if idx == 0:                                   
             if tmr == 1: 
