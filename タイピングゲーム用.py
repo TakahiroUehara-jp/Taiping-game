@@ -16,16 +16,16 @@ player = pygame.image.load("picture/player.png")
 wall = pygame.image.load("picture/wall.png")
 floor = pygame.image.load("picture/floor.png")
 door = pygame.image.load("picture//door.png")
-BtlBG = pygame.image.load("picture//btlbg.png")
+BtlBG = pygame.image.load("picture//btlbg(2).png")
 
-#戦闘外用の敵の画像
+#戦闘内用の敵の画像
 enemy1 = pygame.image.load("picture/enemy lv1.png")
 enemy2 = pygame.image.load("picture/enemy lv2.png")
 enemy3 = pygame.image.load("picture/enemy lv3.png")
 enemy4 = pygame.image.load("picture/enemy lv4.png")
 enemy5 = pygame.image.load("picture/enemy lv5.png")
 
-#戦闘内用の敵の画像
+#戦闘外用の敵の画像
 Enemy1 = pygame.image.load("picture/enemy lv1 (2).png")
 Enemy2 = pygame.image.load("picture/enemy lv2 (2).png")
 Enemy3 = pygame.image.load("picture/enemy lv3 (2).png")
@@ -60,8 +60,9 @@ pl_lifemax = 0
 pl_life = 0
 
 
-enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
-enemy2 = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
+
+enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
+enemies2 = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
 floor_map = [
@@ -139,9 +140,9 @@ def draw_battle(screen, font):
         bx = random.randint(-20, 20)
         by = random.randint(-10, 10)
     screen.blit(BtlBG, [bx, by])
-    enemy = enemy2[stage]
-    screen.blit(enemy, [300, 350])
-    draw_bar(screen, 340, 580, 200, 10, emy_life, emy_lifemax)
+    enemy = enemies2[stage]
+    screen.blit(enemy, [250, 320])
+    draw_bar(screen, 280, 560, 200, 10, emy_life, emy_lifemax)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
     for i in range(10): # 戦闘メッセージの表示
@@ -323,21 +324,6 @@ def main():
                 idx = 0
                 tmr = 0
 
-        elif idx == 10: # 戦闘開始
-            if tmr == 1:
-                init_battle()
-                init_message()
-            elif tmr <= 4:
-                bx = (4-tmr)*220
-                by = 0
-                screen.blit(BtlBG, [bx, by])
-                draw_text(screen, "Encounter!", 350, 200, font, WHITE)
-            elif tmr <= 16:
-                draw_battle(screen, fontS)
-                draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
-            else:
-                idx = 11
-                tmr = 0
             
       
         pygame.display.update()
