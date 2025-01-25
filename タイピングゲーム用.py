@@ -229,16 +229,16 @@ def main():
             draw_battle(screen, font)
             if tmr <= 10:
                 draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
-            elif 10 <= tmr :
+            if 11 <= tmr and tmr <= 17:
                 draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
-            else:
+            if tmr == 18:
                 idx = 3
                 tmr = 0
         
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen)
             if tmr == 1: 
-                set_message("文字を")
+                set_message("")
             if tmr == 15:
                 user_input = entry.get()
                 if user_input == "正解":                                        #ここで正解の判定
