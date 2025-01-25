@@ -1,3 +1,4 @@
+
 import pygame
 import sys
 import random
@@ -67,7 +68,7 @@ enemy2 = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
 floor_map = [
     [1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -90,7 +91,7 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
-            elif tile == 3:
+            if x== 5 and y== 2:
                 screen.blit(enemy, (X, Y))
                             
             if x == pl_x and y == pl_y:
@@ -218,14 +219,14 @@ def main():
                 pl_x += 1
 
             # 敵との接触判定
-            if floor_map[pl_y][pl_x] == 3:
+            if  pl_x == 5 and pl_y == 2:
                 idx = 2
                 tmr = 0
 
         elif idx == 2:  # 戦闘画面
             if tmr == 1:
                 draw_battle(screen, font)
-                init_battle(screen, font)
+                init_battle(screen)
                 init_message()
                 keys = pygame.key.get_pressed()
             elif tmr <= 4:
@@ -335,169 +336,6 @@ def main():
             
         pygame.display.update()
         clock.tick(30)
-
-def main():
-    global idx, tmr, pl_x, pl_y, enemy_life,dmg,pl_life
-    pygame.init()
-    pygame.display.set_caption("Typing Game")
-    screen = pygame.display.set_mode((770, 700))
-    #ディスプレイのサイズ
-    clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 40)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-
-        tmr += 1
-        screen.fill(BLACK)
-
-        if idx == 0:  # タイトル画面
-            screen.blit(title, (30, 5))
-            draw_text(screen, "Press SPACE to Start", 230, 350, font, CYAN)
-            if pygame.key.get_pressed()[K_SPACE]:
-                stage = 1
-                welcome = 20
-                pl_lifemax = 100
-                pl_life = pl_lifemax
-                idx = 1
-                tmr = 0
-
-        elif idx == 1:  # ゲーム画面（フロア探索）
-            draw_floor(screen)
-            keys = pygame.key.get_pressed()                                    #pygame.key.get_pressedは押されているキーをリアルタイム判定できる関数
-            # プレイヤーの移動
-            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1:
-                pl_y -= 1                                                      #プレイヤーがKey_upを押して、フロアの1つ上の座標が1=壁じゃなかったら、そこに移動していいよって指示、下も同じ
-            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1:
-                pl_y += 1
-            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1:
-                pl_x -= 1
-            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1:
-                pl_x += 1
-
-            # 敵との接触判定
-            if floor_map[pl_y][pl_x] == 3:
-                idx = 2
-                tmr = 0
-
-        elif idx == 2:  # 戦闘画面
-            draw_battle(screen, font)
-            keys = pygame.key.get_pressed()
-
-            if keys[K_SPACE] and tmr % 10 == 0:                                # スペースキーで攻撃
-                enemy_hp -= random.randint(1, 5)
-                if enemy_hp <= 0:
-                    # 敵を倒したらフロア画面に戻る
-                    enemy_hp = 10  # 敵のHPをリセット
-                    idx = 1
-                    # 敵を消す
-                    floor_map[pl_y][pl_x] = 0
-        
-        elif idx == 3:# プレイヤーのターン（入力待ち）
-            draw_battle(screen)
-            if tmr == 1: 
-                set_message("文字を")
-            if tmr == 15:
-                user_input = entry.get()
-                if user_input == "正解":                                        #ここで正解の判定
-                    label.config(fg="black")                                   # 文字の色を黒色に変更
-                    tmr = 0
-                else:
-                    label.config(fg="red")                                     # 不正解の場合は赤色に変更
-                    tmr = 0
-
-        elif idx == 4: # プレイヤーの攻撃
-            draw_battle(screen)
-            if tmr == 1:
-                dmg = mojisuu
-            if 2 <= tmr and tmr <= 4:
-                screen.blit(imgEffect[0], [700-tmr*120, -100+tmr*120])
-            if tmr == 5:
-                emy_blink = 5
-                set_message(str(dmg)+"pts of damage!")
-            if tmr == 11:
-                enemy_life = enemy_life - dmg
-                if enemy_life <= 0:
-                    enemy_life = 0
-                    idx = 6
-                    tmr = 0
-            if tmr == 16:
-                idx = 3
-                tmr = 0
-
-        elif idx == 5: # 敵の攻撃
-            draw_battle(screen)
-            if tmr == 1:
-                set_message("タイプミス")
-            if tmr == 5:
-                set_message(emy_name + " の攻撃")
-                emy_step = 30
-            if tmr == 9:
-                dmg = emy_str + random.randint(0, 9)
-                set_message(str(dmg)+"ダメージ!")
-                dmg_eff = 5
-                emy_step = 0
-            if tmr == 15:
-                pl_life = pl_life - dmg
-                if pl_life < 0:
-                    pl_life = 0
-                    idx = 7
-                    tmr = 0
-            if tmr == 20:
-                idx = 3
-                tmr = 0
-       
-        
-        elif idx == 6: #勝利"  
-           if tmr == 1:
-               set_message("～"+"を倒しました。プレイヤーの体力を10回復しました")
-               if pl_life <= 90:
-                   pl_life = pl_life + 10
-           if tmr == 20:
-               set_message("扉のカギを入手しました")
-               keys = keys + 1
-           if tmr == 28:
-              idx = 1
-              tmr = 0
-               
-        elif idx == 7: #敗北
-            if tmr == 1:
-                set_messeage("やられてしまった！")
-            if tmr == 11:
-                idx = 8
-                tmr = 29
-        
-        elif idx == 8: #ゲームオーバー
-            if tmr <= 30:
-                draw_text(screen,"あなたの負けです",360,240,font,RED)
-                draw_text(screen,"ゲームオーバー",360,380,font,RED)
-            elif tmr == 100: 
-                idx = 0
-                tmr = 0
-
-        elif idx == 10: # 戦闘開始
-            if tmr == 1:
-                init_battle()
-                init_message()
-            elif tmr <= 4:
-                bx = (4-tmr)*220
-                by = 0
-                screen.blit(BtlBG, [bx, by])
-                draw_text(screen, "Encounter!", 350, 200, font, WHITE)
-            elif tmr <= 16:
-                draw_battle(screen, fontS)
-                draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
-            else:
-                idx = 11
-                tmr = 0
-            
-      
-        pygame.display.update()
-        clock.tick(10)  # 1秒間に10フレーム更新
-
 
 if __name__ == "__main__":
     main()
