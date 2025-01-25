@@ -43,7 +43,6 @@ dmg_eff = 0
 pl_lifemax = 0
 pl_life = 0
 
-
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
@@ -61,7 +60,8 @@ floor_map = [
 ]
 
 def draw_floor(screen):
-    """フロアの描画"""
+    global stage
+    enemy_name = enemies[stage]
     for y, row in enumerate(floor_map):
         for x, tile in enumerate(row):
             X, Y = x * 70, y * 70
@@ -71,53 +71,13 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
+            #敵の描画
             elif tile == 3:
-                screen.blit(enemies[stage-1], (X, Y))
+                screen.blit(enemy_name, (X, Y))
             # プレイヤーの描画
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
 
-def draw_battle(screen, font):
-    """戦闘画面の描画"""
-    screen.fill(BLACK)
-    draw_text(screen, "戦闘中！", 160, 100, font, WHITE)
-    draw_text(screen, f"敵のHP: {enemy_hp}", 160, 150, font, RED)
-    draw_text(screen, "スペースキーで攻撃", 100, 250, font, CYAN)
-
-def move_player(key): # 主人公の移動
-    global idx, tmr, pl_x, pl_y, pl_d, pl_a, pl_life
-    keys = pygame.key.get_pressed()
-    
-    if floor_map[pl_y][pl_x] == 4: # 扉を開けた
-        idx = 2
-        tmr = 0
-        return
-    
-    if floor_map[pl_y][pl_x] == 3: # 接敵
-        idx = 2
-        tmr = 0
-        return
-
-    # 方向キーで上下左右に移動
-    x = pl_x
-    y = pl_y
-    if keys[K_UP]:
-        pl_d = 0
-        if floor_map[pl_y-1][pl_x] != 1:
-            pl_y = pl_y - 1
-    if keys[K_DOWN]:
-        pl_d = 1
-        if floor_map[pl_y+1][pl_x] != 1:
-            pl_y = pl_y + 1
-    if keys[K_LEFT]:
-        pl_d = 2
-        if floor_map[pl_y][pl_x-1] != 1:
-            pl_x = pl_x - 1
-    if keys[K_RIGHT]:
-        pl_d = 3
-        if floor_map[pl_y][pl_x+1] != 1:
-            pl_x = pl_x + 1
-    pl_a = pl_d*2        
 
 def main():
     global idx, tmr, pl_x, pl_y, enemy_hp
@@ -144,24 +104,19 @@ def main():
             if keys[K_SPACE]:
                 idx = 1
                 tmr = 0
-                stage = 1
 
         elif idx == 1:  # ゲーム画面（フロア探索）
             draw_floor(screen)
-            move_player()
-
-        elif idx == 2:  # 戦闘画面
-            draw_battle(screen, font)
             keys = pygame.key.get_pressed()
+            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1:
+                pl_y -= 1
+            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1:
+                pl_y += 1
+            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1:
+                pl_x -= 1
+            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1:
+                pl_x += 1
 
-            if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
-                enemy_hp -= random.randint(1, 5)
-                if enemy_hp <= 0:
-                    # 敵を倒したらフロア画面に戻る
-                    enemy_hp = 10  # 敵のHPをリセット
-                    idx = 1
-                    # 敵を消す
-                    floor_map[pl_y][pl_x] = 0
 
         pygame.display.update()
         clock.tick(10)  # 1秒間に10フレーム更新
