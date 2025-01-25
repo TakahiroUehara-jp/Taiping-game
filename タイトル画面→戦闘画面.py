@@ -23,14 +23,15 @@ RED = (255, 0, 0)
 CYAN = (0, 255, 255)
 
 # 画像の読み込み
-title = pygame.image.load("picture/Tittle Screan(2).png")
-player = pygame.image.load("picture/player.png")
-wall = pygame.image.load("picture/wall.png")
-floor = pygame.image.load("picture/floor.png")
-door = pygame.image.load("picture/door.png")
-enemy1 = pygame.image.load("picture/enemy lv1.png")
-enemy_floor =pygame.image.load("picture/enem lvmax.jpg")
-btbg=pygame.image.load("picture/btlbg.png")
+title = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\Tittle Screan(2).png")
+player = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\player.png")
+wall = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\wall.png")
+floor = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\floor.png")
+door = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\door.png")
+enemy1 = pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\enemy lv1.png")
+enemy_floor =pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\enem lvmax.JPG")
+btbg=pygame.image.load("C:\\Users\\takau\\OneDrive - 琉球大学\\3年次\\2024後期\\ゼミ成果物\\picture\\btlbg.png")
+
 # グローバル変数の初期化
 pl_x, pl_y = 1, 1  # プレイヤーの初期タイル座標
 idx = 0  # ゲーム状態
@@ -104,7 +105,7 @@ def draw_target(screen, font, dec_target1):
     target = random.choice(list(dec_target1.keys()))
     
     # 選ばれたターゲット文字を画面に表示
-    draw_text(screen, f"入力する文字: {target}", 30, 30, font, BLACK)
+    draw_text(screen, f"入力する文字: {target}", 30, 80, font, WHITE)
         
 
 def new_target():
@@ -149,7 +150,7 @@ def main():
     screen = pygame.display.set_mode((770, 700))
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 40)
+    font = pygame.font.Font("C:/Users/takau/OneDrive - 琉球大学/3年次/2024後期/ゼミ成果物/ipaexm.ttf", 40)
 
     while True:
         for event in pygame.event.get():
