@@ -61,8 +61,11 @@ pl_life = 0
 
 
 
-enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
-enemies2 = [enemy1,enemy2,enemy3,enemy4,enemy5]
+enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]                                 #戦闘外用の敵の画像
+enemies2 = [enemy1,enemy2,enemy3,enemy4,enemy5]  
+emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]                    #戦闘内用の敵の画像
+
+
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
 floor_map = [
@@ -98,15 +101,8 @@ def draw_floor(screen):
                 screen.blit(player, (X, Y))
 
                 
-def init_battle():
-    global emy_name,emy_lifemax,emy_life,emy_x,emy_y,stage
-    enemy = enemies[stage]
+
     
-    emy_life = emy_lifemax
-    emy_lifemax = stage*100                                                           #仮設定
-    emy_name = enemy + "lv" + str(stage)
-    emy_x = 440-enemies.get_width()/2
-    emy_y = 560-enemies.get_height()
     
 def draw_bar(screen, x, y, width, height, current, maximum):                    #draw_barは定義されていなかたので、仮で定義しておきました。細かな調整は後でやってね
     ratio = current / maximum                                                  # ゲージの比率を計算
@@ -231,16 +227,13 @@ def main():
 
         elif idx == 2:  # 戦闘画面
             draw_battle(screen, font)
-            keys = pygame.key.get_pressed()
-
-            if keys[K_SPACE] and tmr % 10 == 0:                                # スペースキーで攻撃
-                enemy_hp -= random.randint(1, 5)
-                if enemy_hp <= 0:
-                    # 敵を倒したらフロア画面に戻る
-                    enemy_hp = 10  # 敵のHPをリセット
-                    idx = 1
-                    # 敵を消す
-                    floor_map[pl_y][pl_x] = 0
+            if tmr <= 10:
+                draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
+            elif 10 <= tmr :
+                draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
+            else:
+                idx = 3
+                tmr = 0
         
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen)
@@ -327,7 +320,7 @@ def main():
             
       
         pygame.display.update()
-        clock.tick(10)  # 1秒間に10フレーム更新
+        clock.tick(7)  # 1秒間に10フレーム更新
 
 
 if __name__ == "__main__":
