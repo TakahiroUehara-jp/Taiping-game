@@ -16,4 +16,4 @@ def check_answer():
             result_label.config(text="{user_inout}", fg="red")
             new_target()
         else:
-            result_label.config(text="{user_input}", fg="black")
+            None
