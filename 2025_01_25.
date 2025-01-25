@@ -49,9 +49,10 @@ tmr = 0  # タイマー
 stage = 0
 welcome = 0
 key = 0
+check = 0
 emy_name =""
 emy_life = 0
-emy_lifemax = 0
+emy_lifemax = 30
 emy_blink = 0
 emy_x = 0 
 emy_y = 0
@@ -60,8 +61,8 @@ dmg_eff = 0
 pl_lifemax = 0
 pl_life = 0
 
-Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
-enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
+Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]#floor 小さい画像
+enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]#battle 大きい画像
 
 
 dic_word1 = {
@@ -81,6 +82,7 @@ dic_word2 = {
     '行き当たりばったり': ['i', 'k', 'i', 'a', 't', 'a', 'r', 'i', 'b', 'a', 't', 't', 'a', 'r', 'i'],
     '馬の耳に念仏': ['u', 'm', 'a', 'n', 'm', 'i', 'm', 'i', 'n', 'i', 'n', 'e', 'n', 'b', 'u', 't', 'u']
 }
+
 dic_word3 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
 dic_word4 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
 
@@ -125,14 +127,9 @@ def draw_text(screen, text, x, y, font, color):
 
 
 def draw_bar(screen, x, y, width, height, current, maximum):
-#draw_barは定義されていなかたので、仮で定義しておきました。細かな調整は後でやってね
-    # ゲージの比率を計算
     ratio = current / maximum
-    
     # ゲージの枠を描画
     pygame.draw.rect(screen, WHITE, (x, y, width, height), 2)  # 白い枠
-
-    # 現在の値に応じたゲージを描画
     fill_width = int(width * ratio)  # 現在の比率で幅を決定
     if ratio > 0.5:
         color = (0, 255, 0)  # 緑（HPが半分以上）
@@ -140,7 +137,6 @@ def draw_bar(screen, x, y, width, height, current, maximum):
         color = (255, 255, 0)  # 黄色（HPが少ない）
     else:
         color = (255, 0, 0)  # 赤（HPが非常に少ない）
-
     pygame.draw.rect(screen, color, (x, y, fill_width, height))  # 塗りつぶし
 
 
@@ -148,8 +144,17 @@ def draw_para(screen, font):    # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
 
 
+def init_battle():
+    global emy_name,emy_lifemax,emy_life,emy_x,emy_y,stage
+    enemy = enemies[stage-1]
+    emy_life = emy_lifemax
+    emy_lifemax = stage*100                                                           #仮設定
+    emy_name = 'enemy lv' + str(stage)
+    emy_x = 440-enemies.get_width()/2
+    emy_y = 560-enemies.get_height()
+
+
 def draw_battle(screen, font):
-    """戦闘画面の描画"""
     global emy_blink, dmg_eff
     bx = 0
     by = 60
@@ -167,36 +172,35 @@ def draw_battle(screen, font):
 
 
 def new_target():
-    global target, current_index
-    target = random.choice(list(dic_word1.keys()))  # ランダムに単語を選択
-    current_index = 0  # 進行状況をリセット
-    draw_text(screen, target, 30, 30, font, BLACK)
-    entry.delete(0, END)
-
-
-def new_target():
-    global target, current_index
-    target = random.choice(list(dic_word1.keys()))  # ランダムに単語を選択
-    current_index = 0  # 進行状況をリセット
-    target_label.config(text=target)
-    result_label.config(text="入力してください", fg="black")
-    entry.delete(0, END)
+    global target, answer, current_index, user_input, check
+    target = random.choice(list(dic_word1.keys()))  # 新しい単語を選択
+    answer = dic_word1[target]
+    current_index = 0
+    user_input = ""
+    check = 0
 
 
 def check_answer():
-    global target, answer, current_index
-    user_input = entry.get()
-    answer = dic_word1[target]
-    target = random.choice(list(dec_word1.keys))
-    current_index = 0
+    global target, answer, current_index, check, user_input
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.unicode:  # 有効な文字入力の場合
+                if event.unicode == answer[current_index]:  # 現在の正解文字と一致する場合
+                    user_input += event.unicode
+                    current_index += 1
+                    if current_index == len(answer):  # 全て正解した場合
+                        check = 1
+                    else:
+                        check = 2  # 間違えた場合
+
     
     if user_input == answer[current_index]:# 入力が現在の正解と一致する場合
-        result_label.config(text= user_input, fg="red")
+        draw_text(screen, user_input, 30, 30, font, BLACK)
         current_index += 1  # 次の文字へ
         if current_index == len(answer):  # 全て正解した場合
-            new_target()  # 新しい単語に切り替え
+            check = 0
     else:
-        None
+        check = 1
 
 
 def main():
@@ -206,7 +210,7 @@ def main():
     screen = pygame.display.set_mode((770, 700))
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 40)
+    font = pygame.font.Font("ipaexm.ttf", 40)
 
     while True:
         for event in pygame.event.get():
@@ -219,7 +223,7 @@ def main():
 
         if idx == 0:  # タイトル画面
             screen.blit(title, (30, 5))
-            draw_text(screen, "Press SPACE to Start", 250, 260, font, CYAN)
+            draw_text(screen, "Press SPACE to Start", 190, 260, font, CYAN)
             keys = pygame.key.get_pressed()
             if keys[K_SPACE]:
                 idx = 1
@@ -257,7 +261,7 @@ def main():
                 draw_battle(screen, fontS)
                 draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
             else:
-                idx = 11
+                idx = 3
                 tmr = 0
         
                 
@@ -267,14 +271,15 @@ def main():
                 set_message("文字を入力")
             if tmr == 15:
                 user_input = entry.get()
+                draw_text(screen, target, 30, 30, font, BLACK)
+                draw_text(screen, user_input, 30, 70, font, BLACK)
                 check_answer()
-            if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
-                enemy_life -= random.randint(1, 5)
-                if enemy_life <= 0: # 敵を倒したらフロア画面に戻る
-                    enemy_life = 10  # 敵のHPをリセット
-                    idx = 1
-                    # 敵を消す
-                    floor_map[pl_y][pl_x] = 0
+                
+                if check == 1:
+                    idx = 4
+                if check == 2:
+                    idx = 5
+
 
         elif idx == 4: # プレイヤーの攻撃
             draw_battle(screen)
@@ -294,13 +299,16 @@ def main():
             if tmr == 16:
                 idx = 3
                 tmr = 0
+            if enemy_life <= 0: # 敵を倒したらフロア画面に戻る
+                enemy_life = 10  # 敵のHPをリセット
+                idx = 1
 
         elif idx == 5: # 敵の攻撃
             draw_battle(screen)
             if tmr == 1:
-                set_message("タイプミス")
+                set_message("ミス!")
             if tmr == 5:
-                set_message(emy_name + " の攻撃")
+                set_message(emy_name + "に攻撃された！")
                 emy_step = 30
             if tmr == 9:
                 dmg = emy_str + random.randint(0, 9)
@@ -320,7 +328,7 @@ def main():
         
         elif idx == 6: #勝利"  
            if tmr == 1:
-               set_message("～"+"を倒しました。プレイヤーの体力を10回復しました")
+               set_message("～"+"your life recovered")
                if pl_life <= 90:
                    pl_life = pl_life + 10
            if tmr == 20:
@@ -339,8 +347,8 @@ def main():
         
         elif idx == 8: #ゲームオーバー
             if tmr <= 30:
-                draw_text(screen,"あなたの負けです",360,240,font,RED)
-                draw_text(screen,"ゲームオーバー",360,380,font,RED)
+                draw_text(screen,"You Lose",360,240,font,RED)
+                draw_text(screen,"Game Over",360,380,font,RED)
             elif tmr == 100: 
                 idx = 0
                 tmr = 0
