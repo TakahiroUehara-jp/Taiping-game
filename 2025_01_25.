@@ -18,12 +18,12 @@ RED   = (255,0,0)
 CYAN  = (0,255,255)
 
 #画像の読み込み
-title = pygame.image.load("picture\\Tittle Screan(2).png")#770×769
+title = pygame.image.load("picture\\Tittle Screan.png")#770×769
 player = pygame.image.load("picture\\player.png")
 wall = pygame.image.load("picture\\wall.png")
 floor = pygame.image.load("picture\\floor.png")
 door = pygame.image.load("picture\\door.png")
-btlbg = pygame.image.load("picture\\btlbg(2).png")
+btlbg = pygame.image.load("picture\\btlbg.png")
 
 enemy1 = pygame.image.load("picture\\enemy lv1.png")
 enemy2 = pygame.image.load("picture\\enemy lv2.png")
@@ -58,11 +58,12 @@ emy_x = 0
 emy_y = 0
 dmg_eff = 0
 
-pl_lifemax = 0
+pl_lifemax = 100
 pl_life = 0
 
 Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]#floor 小さい画像
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]#battle 大きい画像
+emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]  
 message = [""]*10
 
 dic_word1 = {
@@ -144,11 +145,12 @@ def draw_para(screen, font):    # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
 
 
+
 def draw_battle(screen, font):
     """戦闘画面の描画"""
     global emy_blink, dmg_eff,enemies,stage
     bx = 0
-    by = 0
+    by = 60
     if dmg_eff > 0:
         dmg_eff = dmg_eff - 1
         bx = random.randint(-20, 20)
@@ -208,7 +210,11 @@ def main():
             screen.blit(title, (30, 5))
             draw_text(screen, "Press SPACE to Start", 190, 260, font, CYAN)
             keys = pygame.key.get_pressed()
-            if keys[K_SPACE]:
+            if pygame.key.get_pressed()[K_SPACE]:
+                stage = 1
+                welcome = 20
+                pl_lifemax = 100
+                pl_life = pl_lifemax
                 idx = 1
                 tmr = 0
 
@@ -231,11 +237,10 @@ def main():
 
         elif idx == 2:  # 戦闘画面
             draw_battle(screen, font)
-            if tmr <= 20:
-                draw_text(screen, "Encounter!", 200, 200, font, WHITE)
-            elif tmr <= 50:
-                draw_battle(screen, font)
-                draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
+            if tmr <= 10:
+                draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
+            elif tmr <= 17:
+                draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
             else:
                 idx = 3
                 tmr = 0
@@ -243,10 +248,10 @@ def main():
                 
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen)
-            if tmr == 1: 
-                set_message("文字を入力")
-            if tmr == 15:
-                user_input = entry.get()
+            if tmr <= 1: 
+                draw_text(screen, "文字を入力", 300, 200, font, WHITE)
+            if tmr <= 28:
+                
                 draw_text(screen, target, 30, 30, font, BLACK)
                 draw_text(screen, user_input, 30, 70, font, BLACK)
                 check_answer()
@@ -261,11 +266,11 @@ def main():
             draw_battle(screen)
             if tmr == 1:
                 dmg = mojisuu                                                #mojisuuはタイピングの記述がないため仮置き
-            if 2 <= tmr and tmr <= 4:
-                screen.blit(imgEffect[0], [700-tmr*120, -100+tmr*120])
+            if 2 <= tmr and tmr <= 7:
+                screen.blit(effect, [700-tmr*120, -100+tmr*120])
             if tmr == 5:
                 emy_blink = 5
-                set_message(str(dmg)+"pts of damage!")
+                set_message(str(dmg)+"ダメージ受けた!")
             if tmr == 11:
                 enemy_life = enemy_life - dmg
                 if enemy_life <= 0:
@@ -281,9 +286,9 @@ def main():
 
         elif idx == 5: # 敵の攻撃
             draw_battle(screen)
-            if tmr == 1:
-                set_message("mistake!")
-            if tmr == 5:
+            if tmr == 7:
+                set_message("!")
+            if tmr == 14:
                 set_message(emy_name + "attack you")
                 emy_step = 30
             if tmr == 9:
@@ -313,6 +318,7 @@ def main():
            if tmr == 28:
               idx = 1
               tmr = 0
+              stage += 1
                
         elif idx == 7: #敗北
             if tmr == 1:
@@ -331,7 +337,7 @@ def main():
 
             
         pygame.display.update()
-        clock.tick(20)
+        clock.tick(7)
 
 if __name__ == "__main__":
     main()
