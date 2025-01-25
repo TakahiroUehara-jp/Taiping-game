@@ -1,4 +1,3 @@
-
 import pygame
 import sys
 import random
@@ -181,8 +180,9 @@ def new_target():
     target_string.set(new_string)
     entry.delete(0, tk.END)
 
+
 def main():
-    global idx, tmr, pl_x, pl_y,pl_life, enemy_life, dmg
+    global idx, tmr, pl_x, pl_y, enemy_life,dmg,pl_life
     pygame.init()
     pygame.display.set_caption("Typing Game")
     screen = pygame.display.set_mode((770, 700))
@@ -201,16 +201,21 @@ def main():
 
         if idx == 0:  # タイトル画面
             screen.blit(title, (30, 5))
-            draw_text(screen, "", 230, 350, font, CYAN)
+            draw_text(screen, "Press SPACE to Start", 230, 350, font, CYAN)
             if pygame.key.get_pressed()[K_SPACE]:
+                stage = 1
+                welcome = 20
+                pl_lifemax = 100
+                pl_life = pl_lifemax
                 idx = 1
                 tmr = 0
 
         elif idx == 1:  # ゲーム画面（フロア探索）
             draw_floor(screen)
-            keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()                                    #pygame.key.get_pressedは押されているキーをリアルタイム判定できる関数
+            # プレイヤーの移動
             if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1:
-                pl_y -= 1
+                pl_y -= 1                                                      #プレイヤーがKey_upを押して、フロアの1つ上の座標が1=壁じゃなかったら、そこに移動していいよって指示、下も同じ
             elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1:
                 pl_y += 1
             elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1:
@@ -219,28 +224,15 @@ def main():
                 pl_x += 1
 
             # 敵との接触判定
-            if  pl_x == 5 and pl_y == 2:
+            if pl_x == 5 and pl_y == 2 :
                 idx = 2
                 tmr = 0
 
         elif idx == 2:  # 戦闘画面
-            if tmr == 1:
-                draw_battle(screen, font)
-                init_battle(screen)
-                init_message()
-                keys = pygame.key.get_pressed()
-            elif tmr <= 4:
-                bx = (4-tmr)*220
-                by = 0
-                screen.blit(BtlBG, [bx, by])
-                draw_text(screen, "Encounter!", 350, 200, font, WHITE)
-            elif tmr <= 16:
-                draw_battle(screen, fontS)
-                draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
-            else:
-                idx = 11
-                tmr = 0
-            if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
+            draw_battle(screen, font)
+            keys = pygame.key.get_pressed()
+
+            if keys[K_SPACE] and tmr % 10 == 0:                                # スペースキーで攻撃
                 enemy_hp -= random.randint(1, 5)
                 if enemy_hp <= 0:
                     # 敵を倒したらフロア画面に戻る
@@ -249,24 +241,23 @@ def main():
                     # 敵を消す
                     floor_map[pl_y][pl_x] = 0
         
-                
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen)
             if tmr == 1: 
                 set_message("文字を")
             if tmr == 15:
                 user_input = entry.get()
-                if user_input == "正解":  # ここで正解の判定を行います
-                    label.config(fg="black")  # 文字の色を黒色に変更します
+                if user_input == "正解":                                        #ここで正解の判定
+                    label.config(fg="black")                                   # 文字の色を黒色に変更
                     tmr = 0
                 else:
-                    label.config(fg="red")  # 不正解の場合は赤色に変更します
+                    label.config(fg="red")                                     # 不正解の場合は赤色に変更
                     tmr = 0
 
         elif idx == 4: # プレイヤーの攻撃
             draw_battle(screen)
             if tmr == 1:
-                dmg = mojisuu                                                #mojisuuはタイピングの記述がないため仮置き
+                dmg = mojisuu
             if 2 <= tmr and tmr <= 4:
                 screen.blit(imgEffect[0], [700-tmr*120, -100+tmr*120])
             if tmr == 5:
@@ -332,10 +323,26 @@ def main():
                 idx = 0
                 tmr = 0
 
+        elif idx == 10: # 戦闘開始
+            if tmr == 1:
+                init_battle()
+                init_message()
+            elif tmr <= 4:
+                bx = (4-tmr)*220
+                by = 0
+                screen.blit(BtlBG, [bx, by])
+                draw_text(screen, "Encounter!", 350, 200, font, WHITE)
+            elif tmr <= 16:
+                draw_battle(screen, fontS)
+                draw_text(screen, emy_name+" appear!", 300, 200, font, WHITE)
+            else:
+                idx = 11
+                tmr = 0
             
-            
+      
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(10)  # 1秒間に10フレーム更新
+
 
 if __name__ == "__main__":
     main()
