@@ -24,8 +24,8 @@ wall = pygame.image.load("picture/wall.png")
 floor = pygame.image.load("picture/floor.png")
 door = pygame.image.load("picture/door.png")
 enemy1 = pygame.image.load("picture/enemy lv1.png")
-enemy_floor =pygame.image.load("picture\enem lvmax.jpg")
-
+enemy_floor =pygame.image.load("picture/enem lvmax.jpg")
+btbg=pygame.image.load("picture/btlbg.png")
 # グローバル変数の初期化
 pl_x, pl_y = 1, 1  # プレイヤーの初期タイル座標
 idx = 0  # ゲーム状態
@@ -121,7 +121,7 @@ def draw_battle(screen, font):
         dmg_eff = dmg_eff - 1
         bx = random.randint(-20, 20)
         by = random.randint(-10, 10)
-    screen.blit(floor, [bx, by])
+    screen.blit(btbg, [bx, by])
     if emy_life > 0 and emy_blink%2 == 0:
         screen.blit(enemies[stage-1], [emy_x, emy_y+emy_step])
     draw_bar(screen, 340, 580, 200, 10, emy_life, emy_lifemax)
@@ -134,7 +134,7 @@ def draw_battle(screen, font):
 message = [""]*10
 def init_message():
     for i in range(10):
-        message[i] = ""
+        message[i] = ["sushi","てんぷら","らーめん","かぜ","ごま","みかん","りんご","ごりら"]
     
 def set_message(msg):
     for i in range(10):
@@ -208,10 +208,10 @@ def main():
             keys = pygame.key.get_pressed()
 
             if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
-                enemy_hp -= random.randint(1, 5)
-                if enemy_hp <= 0:
+                enemy_life -= random.randint(1, 5)
+                if enemy_life <= 0:
                     # 敵を倒したらフロア画面に戻る
-                    enemy_hp = 10  # 敵のHPをリセット
+                    enemy_life = 10  # 敵のHPをリセット
                     idx = 1
                     # 敵を消す
                     floor_map[pl_y][pl_x] = 0
