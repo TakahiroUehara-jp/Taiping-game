@@ -24,11 +24,19 @@ wall = pygame.image.load("picture\\wall.png")
 floor = pygame.image.load("picture\\floor.png")
 door = pygame.image.load("picture\\door.png")
 btlbg = pygame.image.load("picture\\btlbg(2).png")
+
 enemy1 = pygame.image.load("picture\\enemy lv1.png")
 enemy2 = pygame.image.load("picture\\enemy lv2.png")
 enemy3 = pygame.image.load("picture\\enemy lv3.png")
 enemy4 = pygame.image.load("picture\\enemy lv4.png")
 enemy5 = pygame.image.load("picture\\enemy lv5.png")
+
+Enemy1 = pygame.image.load("picture/enemy lv1 (2).png")
+Enemy2 = pygame.image.load("picture/enemy lv2 (2).png")
+Enemy3 = pygame.image.load("picture/enemy lv3 (2).png")
+Enemy4 = pygame.image.load("picture/enemy lv4 (2).png")
+Enemy5 = pygame.image.load("picture/enemy lv5 (2).png")
+
 key1 = pygame.image.load("picture\\key1.png")
 key2 = pygame.image.load("picture\\key2.png")
 key3 = pygame.image.load("picture\\key3.png")
@@ -106,6 +114,13 @@ def draw_floor(screen):
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
 
+
+def draw_text(screen, text, x, y, font, color):
+    """テキストの描画"""
+    surface = font.render(text, True, color)
+    screen.blit(surface, (x, y))
+
+
 def draw_bar(screen, x, y, width, height, current, maximum):
 #draw_barは定義されていなかたので、仮で定義しておきました。細かな調整は後でやってね
     # ゲージの比率を計算
@@ -125,11 +140,13 @@ def draw_bar(screen, x, y, width, height, current, maximum):
 
     pygame.draw.rect(screen, color, (x, y, fill_width, height))  # 塗りつぶし
 
+
 def draw_para(screen, font):
     # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
     # 必要に応じて、攻撃力や防御力など他の能力を追加
 #コメント　draw_paraが定義されていなかったので、定義しました。
+
 
 def draw_battle(screen, font):
     """戦闘画面の描画"""
@@ -148,12 +165,14 @@ def draw_battle(screen, font):
         emy_blink = emy_blink - 1
     draw_para(screen, font) # 主人公の能力を表示
 
+
 def new_target():
     global target, current_index
     target = random.choice(list(dic_word1.keys()))  # ランダムに単語を選択
     current_index = 0  # 進行状況をリセット
     draw_text(screen, target, 30, 30, font, BLACK)
     entry.delete(0, END)
+
 
 def new_target():
     global target, current_index
@@ -162,6 +181,7 @@ def new_target():
     target_label.config(text=target)
     result_label.config(text="入力してください", fg="black")
     entry.delete(0, END)
+
 
 def check_answer():
     global target, answer, current_index
