@@ -1,3 +1,4 @@
+
 import tkinter as tk
 import pygame
 import sys
@@ -27,21 +28,25 @@ key3 = pygame.image.load("picture\\key3.png")
 key4 = pygame.image.load("picture\\key4.png")
 
 #変数の宣言
-pl_x = 5
-pl_y = 9                     #プレイヤーの座標を管理
-pl_d = 0                      #向き
-idx = 0
-tmr = 0
+pl_x, pl_y = 5, 9  # プレイヤーの初期タイル座標
+idx = 0  # ゲーム状態
+tmr = 0  # タイマー
+pl_d = 0
+pl_a = 0
 stage = 0
 welcome = 0
-
-emy_life = 0
-emy_lifemax =0
+key = 0
+emy_name =""
+emy_life = 30
+emy_lifemax = 30
+emy_step = 0
 emy_blink = 0
+emy_x = 0 
+emy_y = 0
 dmg_eff = 0
 
-pl_lifemax = 0
-pl_life = 0
+pl_lifemax = 100
+pl_life = 100
 
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
 
@@ -61,7 +66,7 @@ floor_map = [
 
 def draw_floor(screen):
     global stage
-    enemy_name = enemies[stage]
+    enemy = enemies[stage]
     for y, row in enumerate(floor_map):
         for x, tile in enumerate(row):
             X, Y = x * 70, y * 70
@@ -71,9 +76,10 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
+            
             #敵の描画
             elif tile == 3:
-                screen.blit(enemy_name, (X, Y))
+                screen.blit(enemy, (X, Y))
             # プレイヤーの描画
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
