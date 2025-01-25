@@ -1,0 +1,19 @@
+
+import pygame
+import sys
+import random
+from pygame.locals import *
+
+
+dic_target1 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
+
+def check_answer():
+    user_input = entry.get()
+    target = random.choice(list(dec_target1.keys))
+    answer = dic_target1[target]
+    for i,values in range(len(answer)):
+        if user_input == answer[i]:
+            result_label.config(text="{user_inout}", fg="red")
+            new_target()
+        else:
+            result_label.config(text="{user_input}", fg="black")
