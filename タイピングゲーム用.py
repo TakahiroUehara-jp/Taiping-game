@@ -189,7 +189,7 @@ def main():
     screen = pygame.display.set_mode((770, 700))
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 40)
+    font = pygame.font.Font("C:/Users/yorih/OneDrive/デスクトップ/python_game/成果発表/ipaexm.ttf", 40)
 
     while True:
         for event in pygame.event.get():
