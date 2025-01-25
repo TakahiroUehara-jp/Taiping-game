@@ -31,11 +31,11 @@ enemy3 = pygame.image.load("picture\\enemy lv3.png")
 enemy4 = pygame.image.load("picture\\enemy lv4.png")
 enemy5 = pygame.image.load("picture\\enemy lv5.png")
 
-Enemy1 = pygame.image.load("picture/enemy lv1 (2).png")
-Enemy2 = pygame.image.load("picture/enemy lv2 (2).png")
-Enemy3 = pygame.image.load("picture/enemy lv3 (2).png")
-Enemy4 = pygame.image.load("picture/enemy lv4 (2).png")
-Enemy5 = pygame.image.load("picture/enemy lv5 (2).png")
+Enemy1 = pygame.image.load("picture\\enemy lv1 (2).png")
+Enemy2 = pygame.image.load("picture\\enemy lv2 (2).png")
+Enemy3 = pygame.image.load("picture\\enemy lv3 (2).png")
+Enemy4 = pygame.image.load("picture\\enemy lv4 (2).png")
+Enemy5 = pygame.image.load("picture\\enemy lv5 (2).png")
 
 key1 = pygame.image.load("picture\\key1.png")
 key2 = pygame.image.load("picture\\key2.png")
@@ -60,7 +60,10 @@ dmg_eff = 0
 pl_lifemax = 0
 pl_life = 0
 
+Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]
+
+
 dic_word1 = {
     'リンゴ': ['r', 'i', 'n', 'g', 'o'],
     'かがみ': ['k', 'a', 'g', 'a', 'm', 'i'],
@@ -97,7 +100,7 @@ floor_map = [
 
 def draw_floor(screen):
     global stage
-    enemy = enemies[stage]
+    Enemy = Enemies[stage]
     for y, row in enumerate(floor_map):
         for x, tile in enumerate(row):
             X, Y = x * 70, y * 70
@@ -109,7 +112,7 @@ def draw_floor(screen):
                 screen.blit(door, (X, Y))
             #敵の描画
             if x == 5 and y == 2:
-                screen.blit(enemy, (X, Y))
+                screen.blit(Enemy, (X, Y))
             # プレイヤーの描画
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
@@ -141,11 +144,8 @@ def draw_bar(screen, x, y, width, height, current, maximum):
     pygame.draw.rect(screen, color, (x, y, fill_width, height))  # 塗りつぶし
 
 
-def draw_para(screen, font):
-    # プレイヤーの能力を表示
+def draw_para(screen, font):    # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
-    # 必要に応じて、攻撃力や防御力など他の能力を追加
-#コメント　draw_paraが定義されていなかったので、定義しました。
 
 
 def draw_battle(screen, font):
@@ -157,7 +157,7 @@ def draw_battle(screen, font):
         dmg_eff = dmg_eff - 1
         bx = random.randint(-20, 20)
         by = random.randint(-10, 10)
-    screen.blit(btbg, [bx, by])
+    screen.blit(btlbg, [bx, by])
     if emy_life > 0 and emy_blink%2 == 0:
         screen.blit(enemies[stage-1], [emy_x, emy_y+emy_step])
     draw_bar(screen, 340, 580, 200, 10, emy_life, emy_lifemax)
@@ -219,8 +219,9 @@ def main():
 
         if idx == 0:  # タイトル画面
             screen.blit(title, (30, 5))
-            draw_text(screen, "", 230, 350, font, CYAN)
-            if pygame.key.get_pressed()[K_SPACE]:
+            draw_text(screen, "Press SPACE to Start", 250, 260, font, CYAN)
+            keys = pygame.key.get_pressed()
+            if keys[K_SPACE]:
                 idx = 1
                 tmr = 0
 
@@ -235,11 +236,11 @@ def main():
                 pl_x -= 1
             elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1:
                 pl_x += 1
-
-            # 敵との接触判定
-            if  pl_x == 5 and pl_y == 2:
+                
+            if pl_x == 5 and pl_y == 2:
                 idx = 2
                 tmr = 0
+                
 
         elif idx == 2:  # 戦闘画面
             if tmr == 1:
@@ -250,7 +251,7 @@ def main():
             elif tmr <= 4:
                 bx = (4-tmr)*220
                 by = 0
-                screen.blit(BtlBG, [bx, by])
+                screen.blit(btlbg, [bx, by])
                 draw_text(screen, "Encounter!", 350, 200, font, WHITE)
             elif tmr <= 16:
                 draw_battle(screen, fontS)
@@ -258,28 +259,22 @@ def main():
             else:
                 idx = 11
                 tmr = 0
-            if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
-                enemy_hp -= random.randint(1, 5)
-                if enemy_hp <= 0:
-                    # 敵を倒したらフロア画面に戻る
-                    enemy_hp = 10  # 敵のHPをリセット
-                    idx = 1
-                    # 敵を消す
-                    floor_map[pl_y][pl_x] = 0
         
                 
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen)
             if tmr == 1: 
-                set_message("文字を")
+                set_message("文字を入力")
             if tmr == 15:
                 user_input = entry.get()
-                if user_input == "正解":  # ここで正解の判定を行います
-                    label.config(fg="black")  # 文字の色を黒色に変更します
-                    tmr = 0
-                else:
-                    label.config(fg="red")  # 不正解の場合は赤色に変更します
-                    tmr = 0
+                check_answer()
+            if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
+                enemy_life -= random.randint(1, 5)
+                if enemy_life <= 0: # 敵を倒したらフロア画面に戻る
+                    enemy_life = 10  # 敵のHPをリセット
+                    idx = 1
+                    # 敵を消す
+                    floor_map[pl_y][pl_x] = 0
 
         elif idx == 4: # プレイヤーの攻撃
             draw_battle(screen)
