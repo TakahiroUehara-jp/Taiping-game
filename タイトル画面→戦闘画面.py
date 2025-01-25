@@ -48,6 +48,11 @@ emy_blink = 0
 emy_x = 0 
 emy_y = 0
 dmg_eff = 0
+user_input=""
+dec_target1 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
+
+
+
 
 pl_lifemax = 0
 pl_life = 0
@@ -92,39 +97,53 @@ def draw_battle(screen, font):
     draw_bar(screen, 340, 580, 200, 10, emy_life, emy_lifemax)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
-    for i in range(10): # 戦闘メッセージの表示
-        draw_text(screen, message[i], 600, 100+i*50, font, WHITE)
     draw_para(screen, font) # 主人公の能力を表示
 
-message = [""]*10
-def init_message():
-    for i in range(10):
-        message[i] = ["sushi","てんぷら","らーめん","かぜ","ごま","みかん","りんご","ごりら"]
+def draw_target(screen, font, dec_target1):
+    # dec_target1のキーをランダムに選んでターゲット文字を取得
+    target = random.choice(list(dec_target1.keys()))
     
-def set_message(msg):
-    for i in range(10):
-        if message[i] == "":
-            message[i] = msg
-            return
-    for i in range(9):
-        message[i] = message[i+1]
-    message[9] = msg
-
-def check_answer():
-    user_input = entry.get()
-    if user_input == target_string.get():
-        result_label.config(text="正解！", fg="black")
-    else:
-        result_label.config(text="不正解", fg="red")
-    new_target()
+    # 選ばれたターゲット文字を画面に表示
+    draw_text(screen, f"入力する文字: {target}", 30, 30, font, BLACK)
+        
 
 def new_target():
-    new_string = generate_random_string()
-    target_string.set(new_string)
-    entry.delete(0, tk.END)
+    global target, current_index
+    target = random.choice(list(dic_word1.keys()))  # ランダムに単語を選択
+    current_index = 0  # 進行状況をリセット
+    target_label.config(text=target)
+    result_label.config(text="入力してください", fg="black")
+    entry.delete(0, END)
+
+def input_typing_event(event,target,user_input):
+    if event.type==pygame.KEYDOWN:
+        if event.Key==pygame.K_BACKSPACE:
+            user_input=user_input[:-1]
+            #Backspaceを押したときの処理 
+        else:
+            user_input += event.unicode
+            return user_input,None
+
+def check_answer():
+    global target, answer, current_index
+    user_input = entry.get()
+    answer = dic_word1[target]
+    target = random.choice(list(dec_word1.keys))
+    current_index = 0
+    
+    if user_input == answer[current_index]:# 入力が現在の正解と一致する場合
+        result_label.config(text= user_input, fg="red")
+        current_index += 1  # 次の文字へ
+        if current_index == len(answer):  # 全て正解した場合
+            new_target()  # 新しい単語に切り替え
+    else:
+        None
+
+    
+    
 
 def main():
-    global idx, tmr, pl_x, pl_y, enemy_life
+    global idx, tmr, pl_x, pl_y, emy_life
     pygame.init()
     pygame.display.set_caption("Typing Game")
     screen = pygame.display.set_mode((770, 700))
@@ -153,12 +172,14 @@ def main():
         elif idx == 1:  # 戦闘画面
             draw_battle(screen, font)
             keys = pygame.key.get_pressed()
+            draw_target(screen, font, dec_target1)  # ターゲット文字表
+            draw_text(screen, f"あなたが入力した文字: {user_input}", 30, 100, font, CYAN)
 
             if keys[K_SPACE] and tmr % 10 == 0:  # スペースキーで攻撃
-                enemy_life -= random.randint(1, 5)
-                if enemy_life <= 0:
+                emy_life -= random.randint(1, 5)
+                if emy_life <= 0:
                     # 敵を倒したらフロア画面に戻る
-                    enemy_life = 10  # 敵のHPをリセット
+                    emy_life = 10  # 敵のHPをリセット
                     idx = 1
                     # 敵を消す
                     floor_map[pl_y][pl_x] = 0
