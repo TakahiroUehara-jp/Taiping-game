@@ -66,26 +66,30 @@ emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]
 message = [""]*10
 user_input=""
 
-dic_word1 = {
-    'リンゴ': ['r', 'i', 'n', 'g', 'o'],
-    'かがみ': ['k', 'a', 'g', 'a', 'm', 'i'],
-    'こおり': ['k', 'o', 'o', 'r', 'i'],
-    'ふうせん': ['h', 'u', 'u', 's', 'e', 'n', 'n'],
-    'さがしもの': ['s', 'a', 'g', 'a', 's', 'i', 'm', 'o', 'n', 'o'],
-    '奈落の底': ['n', 'a', 'r', 'a', 'k', 'u', 'n', 'o', 's', 'o', 'k', 'o']
-}
+dic_word = [
+    "apple",
+    "book",
+    "cat",
+    "dog",
+    "egg",
+    "fish",
+    "grape",
+    "house",
+    "ice",
+    "juice",
+    "chocolate",
+    "lemon",
+    "moon",
+    "university",
+    "orange",
+    "pencil",
+    "queen",
+    "rabbit",
+    "star",
+    "tree"
+]
 
-dic_word2 = {
-    'ゆきだるま': ['y', 'u', 'k', 'i', 'd', 'a', 'r', 'u', 'm', 'a'],
-    '海水浴': ['k', 'a', 'i', 's', 'u', 'i', 'y', 'o', 'k', 'u'],
-    '疫病神': ['y', 'a', 'k', 'u', 'b', 'y', 'o', 'u', 'g', 'a', 'm', 'i'],
-    'あうんの呼吸': ['a', 'u', 'n', 'n', 'n', 'o', 'k', 'o', 'k', 'y', 'u'],
-    '行き当たりばったり': ['i', 'k', 'i', 'a', 't', 'a', 'r', 'i', 'b', 'a', 't', 't', 'a', 'r', 'i'],
-    '馬の耳に念仏': ['u', 'm', 'a', 'n', 'm', 'i', 'm', 'i', 'n', 'i', 'n', 'e', 'n', 'b', 'u', 't', 'u']
-}
 
-dic_word3 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
-dic_word4 = {'りんご':['r','i','n','g','o'],'ラーメン':['r','a','-','m','e','n']}
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
 floor_map = [
@@ -167,17 +171,18 @@ def draw_battle(screen, font):
 
 def new_target():
     global target, answer, current_index, user_input, check
-    answer = dic_word1[target]
+    answer = target                                                            #130 12:55　たかひろ改修
     current_index = 0
     check = 0
-def open_tkinter_input():
-    """Tkinterウィンドウで日本語入力を受け付ける"""
+    
+def handle_user_input(event):
+    """PygameのKEYDOWNイベントで文字入力を処理"""
     global user_input
-    root = tk.Tk()
-    root.withdraw()
-    user_input = simpledialog.askstring("日本語入力", "文字を入力してください:")
-    if user_input is None:  # キャンセルされた場合
-        user_input = ""
+    if event.key == pygame.K_BACKSPACE:
+        user_input = user_input[:-1]                                           # 文字を削除
+    else:
+       user_input += event.unicode                                                                        # 直接文字を追加（日本語IMEを使う場合はシステム設定
+       #たかひろが改修130 12:33
 
 def check_answer():
     """入力が正しいか確認"""
@@ -196,7 +201,8 @@ def main():
     pygame.init()
     pygame.display.set_caption("Typing Game")
     screen = pygame.display.set_mode((770, 700))
-    target = random.choice(list(dic_word1.keys()))  # 新しい単語を選択
+    target = random.choice(dic_word)  # 新しい単語を選択
+    #タカヒロ改修　130 12:38
     new_target()
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
@@ -209,12 +215,11 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type==KEYDOWN:
+                handle_user_input(event)  
                 if event.key==K_RETURN:
                     check_answer()
                 if event.key==K_BACKSPACE:
-                    user_input=user_input[:-1]
-              
-                                          
+                    user_input=user_input[:-1]        
         
                    
 
@@ -264,8 +269,6 @@ def main():
         elif idx == 3:# プレイヤーのターン（入力待ち）
             draw_battle(screen,font)
             keys = pygame.key.get_pressed()
-            if pygame.key.get_pressed()[K_SPACE]:
-                open_tkinter_input()
             if tmr <= 1000: 
                 draw_text(screen, f"入力する文字: {target}", 120, 200, font, WHITE)
                 
