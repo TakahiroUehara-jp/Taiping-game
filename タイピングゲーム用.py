@@ -266,7 +266,7 @@ def main():
             keys = pygame.key.get_pressed()
             if pygame.key.get_pressed()[K_SPACE]:
                 open_tkinter_input()
-            if tmr <= 10: 
+            if tmr <= 1000: 
                 draw_text(screen, f"入力する文字: {target}", 120, 200, font, WHITE)
                 
                 draw_text(screen, f"あなたが入力した文字:{user_input}", 120, 100, font, WHITE)
@@ -289,12 +289,12 @@ def main():
         elif idx == 4: # プレイヤーの攻撃
             draw_battle(screen,font)
             if tmr == 1:
-                dmg = 10                                                        #mojisuuはタイピングの記述がないため仮置き
+                dmg = 50                                                        #mojisuuはタイピングの記述がないため仮置き
             if 2 <= tmr and tmr <= 7:
                 screen.blit(Effect, [700-tmr*120, -100+tmr*120])
             if tmr == 5:
                 emy_blink = 5
-                draw_text(screen, str(dmg)+"ダメージ!", 220, 300, font, CYAN)
+                draw_text(screen, "10ダメージ!", 220, 300, font, CYAN)
             if tmr == 11:
                 enemy_life = enemy_life - dmg
                 if enemy_life <= 0:
@@ -317,23 +317,23 @@ def main():
                 draw_text(screen, "10ダメージ受けた!", 220, 120, font, CYAN)
                 emy_step = 0
             if tmr == 30:
-                pl_life = pl_life - dmg
-                if pl_life < 0:
-                    pl_life = 0
+                pl_life = pl_life - 50
+                if pl_life <= 0:
                     idx = 7
                     tmr = 0
-            if tmr == 40:
-                idx = 3
-                tmr = 0
+                else:
+                    idx = 3
+                    tmr = 0
        
         
         elif idx == 6: #勝利"  
-           if tmr == 1:
-               set_message("～"+"your life recovered")
+           draw_battle(screen,font)
+           if 2 <= tmr and tmr <= 12:
+               draw_text(screen,"あなたの勝利 ", 220, 120, font, CYAN)
                if pl_life <= 90:
                    pl_life = pl_life + 10
-           if tmr == 20:
-               set_message("扉のカギを入手しました")
+           if 13 <= tmr and tmr <= 23:
+               draw_text(screen,"扉のカギを入手しました", 220, 120, font, CYAN)
                keys = keys + 1
            if tmr == 28:
               idx = 1
@@ -341,17 +341,19 @@ def main():
               stage += 1
                
         elif idx == 7: #敗北
-            if tmr == 1:
-                set_messeage("やられてしまった！")
+            draw_battle(screen,font)
+            if 2 <= tmr and tmr <= 12:
+                draw_text(screen,"やられてしまった", 220, 120, font, CYAN)
             if tmr == 11:
                 idx = 8
                 tmr = 29
         
         elif idx == 8: #ゲームオーバー
-            if tmr <= 30:
-                draw_text(screen,"You Lose",360,240,font,RED)
-                draw_text(screen,"Game Over",360,380,font,RED)
-            elif tmr == 100: 
+            draw_battle(screen,font)
+            if tmr <= 70:
+                draw_text(screen,"あなたの負けです",220,120,font,RED)
+                draw_text(screen,"ゲームオーバー",220,220,font,RED)
+            elif tmr == 71: 
                 idx = 0
                 tmr = 0
 
