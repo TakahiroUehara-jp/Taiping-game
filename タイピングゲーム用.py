@@ -49,8 +49,8 @@ welcome = 0
 key = 0
 check = 0
 emy_name =""
-emy_life = 0
-emy_lifemax = 30
+enemy_life = 0
+enemy_lifemax = 30
 emy_blink = 0
 emy_x = 0 
 emy_y = 0
@@ -128,7 +128,7 @@ def draw_text(screen, text, x, y, font, color):
 
 
 def draw_bar(screen, x, y, width, height, current, maximum):
-    ratio = current / maximum
+    ratio =  enemy_life/ enemy_lifemax
     # ゲージの枠を描画
     pygame.draw.rect(screen, WHITE, (x, y, width, height), 2)  # 白い枠
     fill_width = int(width * ratio)  # 現在の比率で幅を決定
@@ -158,7 +158,7 @@ def draw_battle(screen, font):
     screen.blit(btlbg, [bx, by])
     enemy = enemies[stage]
     screen.blit(enemy, [250, 320])
-    draw_bar(screen, 280, 560, 200, 10, emy_life, emy_lifemax)
+    draw_bar(screen, 280, 560, 200, 10, enemy_life, enemy_lifemax)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
     for i in range(10): # 戦闘メッセージの表示
