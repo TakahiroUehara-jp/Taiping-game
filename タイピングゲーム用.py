@@ -47,7 +47,7 @@ key4 = pygame.image.load("picture\\key4.png")
 Effect = pygame.image.load("picture\\effect-attack.png")
 
 #変数の宣言
-pl_x, pl_y = 5, 8  # プレイヤーの初期タイル座標
+pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標
 idx = 0  # ゲーム状態
 tmr = 0  # タイマー
 stage = 1
@@ -261,6 +261,7 @@ def main():
                 welcome = 20
                 pl_lifemax = 100
                 pl_life = pl_lifemax
+                pl_x, pl_y = 5, 8 
                 idx = 10
                 tmr = 0
 
@@ -358,6 +359,7 @@ def main():
                     tmr = 0
                 else:
                     idx = 3
+                    heal = 0
                     tmr = 0
        
         
@@ -368,11 +370,10 @@ def main():
                if stage == 5:
                    idx = 9
                    tmr = 0
-               else:   
-                   if pl_life <= 90:
+               else:
+                   if heal == 0:
                        pl_life = pl_life + 10
-                   else:
-                       pl_life = pl_lifemax
+                       heal = 1
            elif tmr <= 27:
                draw_text(screen,"扉のカギを入手しました", 210, 100, font, CYAN)
                screen.blit(key1,(250,150))
