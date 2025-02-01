@@ -19,13 +19,15 @@ RED   = (255,0,0)
 CYAN  = (0,255,255)
 
 #画像の読み込み
-#画像の読み込み
 title = pygame.image.load("picture\\Tittle Screan.png")#770×769
 player = pygame.image.load("picture\\player.png")
 wall = pygame.image.load("picture\\wall.png")
 floor = pygame.image.load("picture\\floor.png")
 door = pygame.image.load("picture\\door.png")
+stairs = pygame.image.load("picture\\black stairs.png")
 btlbg = pygame.image.load("picture\\btlbg.png")
+key1 = pygame.image.load("picture\\key1.png")
+Effect = pygame.image.load("picture\\effect-attack.png")
 
 enemy1 = pygame.image.load("picture\\enemy lv1.png")
 enemy2 = pygame.image.load("picture\\enemy lv2.png")
@@ -39,12 +41,6 @@ Enemy3 = pygame.image.load("picture\\enemy lv3 (2).png")
 Enemy4 = pygame.image.load("picture\\enemy lv4 (2).png")
 Enemy5 = pygame.image.load("picture\\enemy lv5 (2).png")
 
-key1 = pygame.image.load("picture\\key1.png")
-key2 = pygame.image.load("picture\\key2.png")
-key3 = pygame.image.load("picture\\key3.png")
-key4 = pygame.image.load("picture\\key4.png")
-
-Effect = pygame.image.load("picture\\effect-attack.png")
 
 #変数の宣言
 pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標
@@ -101,7 +97,7 @@ ending_text =[
     ]
 
 
-# フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
+# フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 階段）
 floor_map = [
     [1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -112,7 +108,7 @@ floor_map = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1]
+    [1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1]
 ]
 
 def draw_floor(screen):
@@ -128,6 +124,8 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
+            elif tile == 3:
+                screen.blit(stairs, (X, Y))
             #敵の描画　
             if x == 5 and y == 2:
                 if key == 0:
@@ -138,7 +136,6 @@ def draw_floor(screen):
             # プレイヤーの描画
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
-
 
 def draw_text(screen, text, x, y, font, color):
     """テキストの描画"""
@@ -269,13 +266,13 @@ def main():
         elif idx == 1:  # ゲーム画面（フロア探索）
             draw_floor(screen)
             keys = pygame.key.get_pressed()
-            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1 and pl_y > 0:
+            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1 and floor_map[pl_y - 1][pl_x] != 3 and pl_y > 0:
                 pl_y -= 1
-            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1 and pl_y < len(floor_map) - 1:
+            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1 and floor_map[pl_y + 1][pl_x] != 3 and pl_y < len(floor_map) - 1:
                 pl_y += 1
-            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1 and pl_x > 0:
+            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1 and floor_map[pl_y][pl_x - 1] != 3 and pl_x > 0:
                 pl_x -= 1
-            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1 and pl_x < len(floor_map[0]) - 1:
+            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1 and floor_map[pl_y][pl_x + 1] != 3 and pl_x < len(floor_map[0]) - 1:
                 pl_x += 1
            #変更     
             if pl_x == 5 and pl_y == 2:
@@ -289,6 +286,7 @@ def main():
                     pl_x, pl_y = 5, 8 
                     idx = 1
                     tmr = 0
+                
                 
 
         elif idx == 2:#戦闘画面
