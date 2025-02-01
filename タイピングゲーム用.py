@@ -41,7 +41,7 @@ key4 = pygame.image.load("picture/key4.png")
 Effect = pygame.image.load("picture/effect-attack.png")
 
 #変数の宣言
-pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標
+pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標                        #変更：全クリア後の初期位置のバグ修正のため（2/1)
 idx = 0  # ゲーム状態
 tmr = 0  # タイマー
 stage = 1
@@ -217,7 +217,8 @@ def main():
             if pygame.key.get_pressed()[K_SPACE]:
                 stage = 1
                 welcome = 20
-                pl_x, pl_y = 5, 8
+                pl_x, pl_y = 5, 8                                                       #変更：全クリア後の初期位置のバグ修正のため（2/1)
+              
                 pl_lifemax = 100
                 pl_life = pl_lifemax
                 idx = 1
@@ -302,10 +303,10 @@ def main():
                     idx = 3
                     tmr = 0
 
-        elif idx == 5: # 敵の攻撃
+        elif idx == 5: # 敵の攻撃                                                                               #変更：前回のミーティング(1/31)をベースに再度修正（2/1)
             draw_battle(screen,font)
             if  2 <= tmr and tmr <= 12:
-                draw_text(screen,"不正解！！"+ emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN) 
+                draw_text(screen,"不正解！！"+ emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN)                #変更：「不正解」と「敵の攻撃」をまとめて表示 (2/1)
                 emy_step = 30
             if  13 <= tmr and tmr <= 23:
                 draw_text(screen, str(stage*10)+"ダメージ受けた!", 220, 120, font, CYAN)
