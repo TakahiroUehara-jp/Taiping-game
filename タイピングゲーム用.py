@@ -98,7 +98,6 @@ ending_text =[
     "いつ復活するか分からない魔王に備え、勇者は旅を続ける。",
     "",
     "GAME CLEAR!!おめでとう!!"
-    "Press SPACE"
     ]
 
 
