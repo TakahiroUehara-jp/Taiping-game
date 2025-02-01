@@ -174,6 +174,7 @@ def draw_bar(screen, x, y, width, height, current, maximum):
 
 def draw_para(screen, font):    # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
+    draw_text(screen, f"HP: {enemy_life}/{enemy_lifemax}", 280, 580, font, WHITE)
 
 
 def draw_battle(screen, font):
@@ -255,9 +256,10 @@ def main():
             draw_text(screen, "Press SPACE to Start", 190, 260, font, CYAN)
             keys = pygame.key.get_pressed()
             if pygame.key.get_pressed()[K_SPACE]:
-                stage = 5
+                stage = 1
                 welcome = 20
                 pl_lifemax = 100
+                enemy_lifemax = 10*stage
                 pl_life = pl_lifemax
                 pl_x, pl_y = 5, 8 
                 heal = 0
