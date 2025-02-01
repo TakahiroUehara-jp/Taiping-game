@@ -262,6 +262,7 @@ def main():
                 pl_lifemax = 100
                 pl_life = pl_lifemax
                 pl_x, pl_y = 5, 8 
+                heal = 0
                 idx = 10
                 tmr = 0
 
