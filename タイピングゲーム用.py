@@ -226,11 +226,11 @@ def check_answer():
         
         
 def main():
-    global idx, tmr, pl_x, pl_y,pl_life, enemy_life,dmg,target,answer,user_input,check,key,stage
+    global idx, tmr, pl_x, pl_y,pl_life, pl_lifemax, enemy_life, dmg
+    global target,answer, user_input, check, key, stage
     pygame.init()
     pygame.display.set_caption("Typing Game")
     screen = pygame.display.set_mode((770, 700))
-    
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
     font = pygame.font.Font("ipaexm.ttf", 40)
@@ -353,7 +353,7 @@ def main():
                 draw_text(screen, str(stage*10)+"ダメージ受けた!", 220, 120, font, CYAN)
                 emy_step = 0
             if tmr == 30:
-                pl_life = pl_life - stage*10
+                pl_life = max(pl_life - stage*10, 0) if pl_life > stage*10 else 0
                 if pl_life <= 0:
                     idx = 7
                     tmr = 0
@@ -372,8 +372,9 @@ def main():
                    tmr = 0
                else:
                    if heal == 0:
-                       pl_life = pl_life + 10
+                       pl_life = min(pl_life + 10, pl_lifemax) if pl_life < 90 else pl_lifemax 
                        heal = 1
+                   
            elif tmr <= 27:
                draw_text(screen,"扉のカギを入手しました", 210, 100, font, CYAN)
                screen.blit(key1,(250,150))
