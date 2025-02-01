@@ -19,32 +19,32 @@ RED   = (255,0,0)
 CYAN  = (0,255,255)
 
 #画像の読み込み
-#画像の読み込み
-title = pygame.image.load("picture\\Tittle Screan.png")#770×769
-player = pygame.image.load("picture\\player.png")
-wall = pygame.image.load("picture\\wall.png")
-floor = pygame.image.load("picture\\floor.png")
-door = pygame.image.load("picture\\door.png")
-btlbg = pygame.image.load("picture\\btlbg.png")
 
-enemy1 = pygame.image.load("picture\\enemy lv1.png")
-enemy2 = pygame.image.load("picture\\enemy lv2.png")
-enemy3 = pygame.image.load("picture\\enemy lv3.png")
-enemy4 = pygame.image.load("picture\\enemy lv4.png")
-enemy5 = pygame.image.load("picture\\enemy lv5.png")
+title = pygame.image.load("picture2\\Tittle Screan.png")#770×769
+player = pygame.image.load("picture2\\player.png")
+wall = pygame.image.load("picture2\\wall.png")
+floor = pygame.image.load("picture2\\floor.png")
+door = pygame.image.load("picture2\\door.png")
+btlbg = pygame.image.load("picture2\\btlbg.png")
 
-Enemy1 = pygame.image.load("picture\\enemy lv1 (2).png")
-Enemy2 = pygame.image.load("picture\\enemy lv2 (2).png")
-Enemy3 = pygame.image.load("picture\\enemy lv3 (2).png")
-Enemy4 = pygame.image.load("picture\\enemy lv4 (2).png")
-Enemy5 = pygame.image.load("picture\\enemy lv5 (2).png")
+enemy1 = pygame.image.load("picture2\\enemy lv1.png")
+enemy2 = pygame.image.load("picture2\\enemy lv2.png")
+enemy3 = pygame.image.load("picture2\\enemy lv3.png")
+enemy4 = pygame.image.load("picture2\\enemy lv4.png")
+enemy5 = pygame.image.load("picture2\\enemy lv5.png")
 
-key1 = pygame.image.load("picture\\key1.png")
-key2 = pygame.image.load("picture\\key2.png")
-key3 = pygame.image.load("picture\\key3.png")
-key4 = pygame.image.load("picture\\key4.png")
+Enemy1 = pygame.image.load("picture2\\enemy lv1 (2).png")
+Enemy2 = pygame.image.load("picture2\\enemy lv2 (2).png")
+Enemy3 = pygame.image.load("picture2\\enemy lv3 (2).png")
+Enemy4 = pygame.image.load("picture2\\enemy lv4 (2).png")
+Enemy5 = pygame.image.load("picture2\\enemy lv5 (2).png")
 
-Effect = pygame.image.load("picture\\effect-attack.png")
+key1 = pygame.image.load("picture2\\key1.png")
+key2 = pygame.image.load("picture2\\key2.png")
+key3 = pygame.image.load("picture2\\key3.png")
+key4 = pygame.image.load("picture2\\key4.png")
+
+Effect = pygame.image.load("picture/effect-attack.png")
 
 #変数の宣言
 pl_x, pl_y = 5, 8  # プレイヤーの初期タイル座標
@@ -56,7 +56,7 @@ key = 0
 check = 0
 emy_name =""
 enemy_life = 0
-enemy_lifemax = 10*stage #変更
+enemy_lifemax = 10*stage 
 emy_blink = 0
 emy_x = 0 
 emy_y = 0
@@ -72,12 +72,11 @@ emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]
 message = [""]*10
 user_input=""
 
-#変更
+
 list_word = ["apple","book","cat","dog","egg","fish","grape","house",
              "ice","juice","chocolate","lemon","moon","university",
              "orange","pencil","queen","rabbit","star","tree"]
-#変更
-# あらすじテキスト
+
 #あらすじテキスト
 story_text = [
     "コトバ王国は平和なコトバで満ちあふれ、そこに住む人々は",
@@ -87,11 +86,9 @@ story_text = [
     "魔王バリーはかつての先代魔王ゾーゴンの封印を解き、",
     "完全体としての魔王になり、",
     "勇者コトノハマモルは生まれ育ったコトバ王国を守るため、",
-    "魔王討伐を胸に誓い旅立つのであった。",
-    "",
-    "Press SPACE to Start",
-    
+    "魔王討伐を胸に誓い旅立つのであった。"
 ]
+    
 
 ending_text =[
     "勇者コトノハマモルは魔王バリーを倒し、",
@@ -101,7 +98,6 @@ ending_text =[
     "いつ復活するか分からない魔王に備え、勇者は旅を続ける。",
     "",
     "GAME CLEAR!!おめでとう!!"
-    "Press SPACE"
     ]
 
 
@@ -119,7 +115,7 @@ floor_map = [
     [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1]
 ]
 
-#Fuka
+
 def draw_floor(screen):
     global stage,Enemy,key
     Enemy = Enemies[stage-1]
@@ -150,7 +146,7 @@ def draw_text(screen, text, x, y, font, color):
     surface = font.render(text, True, color)
     screen.blit(surface, (x, y))
 
-#Fuka
+
 def draw_story(screen, font): #あらすじを画面に表示する関数
     global stage
     screen.fill(BLACK)  # 背景を黒で塗りつぶす色とかはあとで調整
@@ -164,7 +160,7 @@ def draw_story(screen, font): #あらすじを画面に表示する関数
         
 
 def draw_bar(screen, x, y, width, height, current, maximum):
-    ratio =  current/ maximum #変更
+    ratio =  current/ maximum 
     # ゲージの枠を描画
     pygame.draw.rect(screen, WHITE, (x, y, width, height), 2)  # 白い枠
     fill_width = int(width * ratio)  # 現在の比率で幅を決定
@@ -261,9 +257,11 @@ def main():
             if pygame.key.get_pressed()[K_SPACE]:
                 stage = 1
                 welcome = 20
+                pl_x, pl_y = 5, 8                                                       #変更：全クリア後の初期位置のバグ修正のため（2/1)
+              
                 pl_lifemax = 100
                 pl_life = pl_lifemax
-                idx = 10
+                idx = 1
                 tmr = 0
 
 
@@ -345,18 +343,16 @@ def main():
                     idx = 3
                     tmr = 0
 
-        elif idx == 5: # 敵の攻撃
+        elif idx == 5: # 敵の攻撃                                                                               #変更：前回のミーティング(1/31)をベースに再度修正（2/1)
             draw_battle(screen,font)
-            if tmr <= 12:
-                draw_text(screen, "不正解", 220, 300, font, WHITE)
-            if  13 <= tmr and tmr <= 20:
-                draw_text(screen, emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN) 
+            if  2 <= tmr and tmr <= 12:
+                draw_text(screen,"不正解！！"+ emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN)                #変更：「不正解」と「敵の攻撃」をまとめて表示 (2/1)
                 emy_step = 30
-            if  21 <= tmr and tmr <= 33:
-                pl_life = pl_life - 10
-                draw_text(screen, "10ダメージ受けた!", 220, 120, font, CYAN)
+            if  13 <= tmr and tmr <= 23:
+                draw_text(screen, str(stage*10)+"ダメージ受けた!", 220, 120, font, CYAN)
                 emy_step = 0
-            else:
+            if tmr == 30:
+                pl_life = pl_life - stage*10
                 if pl_life <= 0:
                     idx = 7
                     tmr = 0
@@ -409,17 +405,20 @@ def main():
         elif idx == 9: #クリア
             draw_story(screen,font)
             keys = pygame.key.get_pressed()
-            if pygame.key.get_pressed()[K_SPACE]:
-                idx = 0
-                tmr = 0
-                
-        #Fuka    
-        elif idx == 10: #Fuka
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 0
+                    tmr = 0
+            
+        elif idx == 10:
             draw_story(screen,font)
             keys = pygame.key.get_pressed()
-            if pygame.key.get_pressed()[K_SPACE]:
-                idx = 1
-                tmr = 0
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 1
+                    tmr = 0
             
         pygame.display.update()
         clock.tick(7)
