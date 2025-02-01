@@ -86,11 +86,9 @@ story_text = [
     "魔王バリーはかつての先代魔王ゾーゴンの封印を解き、",
     "完全体としての魔王になり、",
     "勇者コトノハマモルは生まれ育ったコトバ王国を守るため、",
-    "魔王討伐を胸に誓い旅立つのであった。",
-    "",
-    "Press SPACE to Start",
-    
+    "魔王討伐を胸に誓い旅立つのであった。"
 ]
+    
 
 ending_text =[
     "勇者コトノハマモルは魔王バリーを倒し、",
@@ -100,7 +98,6 @@ ending_text =[
     "いつ復活するか分からない魔王に備え、勇者は旅を続ける。",
     "",
     "GAME CLEAR!!おめでとう!!"
-    "Press SPACE"
     ]
 
 
@@ -408,17 +405,20 @@ def main():
         elif idx == 9: #クリア
             draw_story(screen,font)
             keys = pygame.key.get_pressed()
-            if pygame.key.get_pressed()[K_SPACE]:
-                idx = 0
-                tmr = 0
-                
-        #Fuka    
-        elif idx == 10: #Fuka
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 0
+                    tmr = 0
+            
+        elif idx == 10:
             draw_story(screen,font)
             keys = pygame.key.get_pressed()
-            if pygame.key.get_pressed()[K_SPACE]:
-                idx = 1
-                tmr = 0
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 1
+                    tmr = 0
             
         pygame.display.update()
         clock.tick(7)
