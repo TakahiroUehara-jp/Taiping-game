@@ -67,7 +67,6 @@ pl_life = 0
 Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]#floor 小さい画像
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]#battle 大きい画像
 emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]  
-message = [""]*10
 user_input=""
 
 #変更
@@ -116,9 +115,9 @@ floor_map = [
 def draw_floor(screen):
     global stage,Enemy,key
     Enemy = Enemies[stage-1]
-    rect_Enemy = Enemy.get_rect()
-    for y, row in enumerate(floor_map):
-        for x, tile in enumerate(row):
+    rect_Enemy = Enemy.get_rect()                                               #Enemyというオブジェクトの位置と大きさを取得
+    for y, row in enumerate(floor_map):                                         #floor_mapの各要素にインデックス番号を付ける
+        for x, tile in enumerate(row):                                          #各行の中の各タイル（要素）を処理
             X, Y = x * 70, y * 70
             if tile == 0:
                 screen.blit(floor, (X, Y))
@@ -126,13 +125,11 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
-            elif tile == 3:
-                screen.blit(stairs, (X, Y))
             #敵の描画　
             if x == 5 and y == 2:
                 if key == 0:
                     rect_Enemy.center = (X + 35, Y + 35)
-                    screen.blit(Enemy, rect_Enemy.topleft)
+                    screen.blit(Enemy, rect_Enemy.topleft)                     #画像の左上の座標変更
                 else:
                     screen.blit(floor, (X, Y))
             # プレイヤーの描画
@@ -158,6 +155,7 @@ def draw_story(screen, font): #あらすじを画面に表示する関数
             draw_text(screen, line, 60, 100 + i * 50, font, WHITE)
         
 
+
 def draw_bar(screen, x, y, width, height, current, maximum):
     ratio =  current/ maximum #変更
     # ゲージの枠を描画
@@ -173,26 +171,21 @@ def draw_bar(screen, x, y, width, height, current, maximum):
 
 
 def draw_para(screen, font):    # プレイヤーの能力を表示
-    draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
-    draw_text(screen, f"HP: {enemy_life}/{enemy_lifemax}", 280, 580, font, WHITE)
+    draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)   #波かっこで囲まれた変数名や式があると実行時に置換
+
 
 
 def draw_battle(screen, font):
-    global emy_blink, dmg_eff, enemies, stage, enemy_life, enemy_lifemax, emy_step
+    """戦闘画面の描画"""
+    global emy_blink, dmg_eff,enemies,stage
     bx = 0
     by = 60
-    if dmg_eff > 0:
-        dmg_eff = dmg_eff - 1
-        bx = random.randint(-20, 20)
-        by = random.randint(-10, 10)
     screen.blit(btlbg, [bx, by])
     enemy = enemies[stage-1]
     rect_enemy = enemy.get_rect()
-    rect_enemy.center = (385, 380 + emy_step)
+    rect_enemy.center = (385, 380)
+    screen.blit(enemy, rect_enemy.topleft)
     draw_bar(screen, 280, 560, 200, 10, enemy_life, enemy_lifemax)
-    
-    if enemy_life > 0 and emy_blink%2 == 0:
-        screen.blit(enemy, rect_enemy.topleft)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
     for i in range(10): # 戦闘メッセージの表示
@@ -204,18 +197,17 @@ def new_target():
     target = random.choice(list_word)
     answer = target                                                            #130 12:55　たかひろ改修
     check = 0
-
-
+    
 def handle_user_input(event):
     """PygameのKEYDOWNイベントで文字入力を処理"""
     global user_input
     if event.key == pygame.K_BACKSPACE:
         user_input = user_input[:-1]                                         # 文字を削除
-    if event.key==K_RETURN: 
+    if event.key==K_RETURN: #RETURNを押すと×が返されるので、なにも入力しないように入れた
         None
     else:
        user_input += event.unicode                                                                        # 直接文字を追加（日本語IMEを使う場合はシステム設定
-
+       #たかひろが改修130 12:33
 
 def check_answer():
     """入力が正しいか確認"""
@@ -227,11 +219,12 @@ def check_answer():
         
         
 def main():
-    global idx, tmr, pl_x, pl_y,pl_life, pl_lifemax, enemy_life, enemy_lifemax, dmg, emy_step, emy_blink
-    global target,answer, user_input, check, key, stage
+    global idx, tmr, pl_x, pl_y,pl_life, enemy_life,dmg,target,answer,user_input,check,key,stage
     pygame.init()
     pygame.display.set_caption("Typing Game")
-    screen = pygame.display.set_mode((770, 700)) #ディスプレイのサイズ
+    screen = pygame.display.set_mode((770, 700))
+    
+    #ディスプレイのサイズ
     clock = pygame.time.Clock()
     font = pygame.font.Font("ipaexg.ttf", 40)
     user_input=""
@@ -257,11 +250,8 @@ def main():
             keys = pygame.key.get_pressed()
             if pygame.key.get_pressed()[K_SPACE]:
                 stage = 1
-                welcome = 20
                 pl_lifemax = 100
                 pl_life = pl_lifemax
-                pl_x, pl_y = 5, 8 
-                heal = 0
                 idx = 10
                 tmr = 0
 
@@ -269,13 +259,13 @@ def main():
         elif idx == 1:  # ゲーム画面（フロア探索）
             draw_floor(screen)
             keys = pygame.key.get_pressed()
-            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1 and floor_map[pl_y - 1][pl_x] != 3 and pl_y > 0:
+            if keys[K_UP] and floor_map[pl_y - 1][pl_x] != 1 and pl_y > 0:
                 pl_y -= 1
-            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1 and floor_map[pl_y + 1][pl_x] != 3 and pl_y < len(floor_map) - 1:
+            elif keys[K_DOWN] and floor_map[pl_y + 1][pl_x] != 1 and pl_y < len(floor_map) - 1: #map外にいけないように
                 pl_y += 1
-            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1 and floor_map[pl_y][pl_x - 1] != 3 and pl_x > 0:
+            elif keys[K_LEFT] and floor_map[pl_y][pl_x - 1] != 1 and pl_x > 0:
                 pl_x -= 1
-            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1 and floor_map[pl_y][pl_x + 1] != 3 and pl_x < len(floor_map[0]) - 1:
+            elif keys[K_RIGHT] and floor_map[pl_y][pl_x + 1] != 1 and pl_x < len(floor_map[0]) - 1:#map外にいけないように
                 pl_x += 1
            #変更     
             if pl_x == 5 and pl_y == 2:
@@ -293,12 +283,11 @@ def main():
 
         elif idx == 2:#戦闘画面
             draw_battle(screen, font)
-            if  tmr>= 2 and tmr <= 10:
+            if tmr <= 10:
                 draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
             elif tmr <= 17:
                 draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
-                enemy_lifemax = 10*stage
-                enemy_life = enemy_lifemax
+                enemy_life = enemy_lifemax 
             else:
                 idx = 3
                 tmr = 0
@@ -334,7 +323,7 @@ def main():
                 draw_text(screen, f"{dmg}のダメージ!", 450, 190, font, CYAN)
             elif 14 >= tmr <= 15:
                 emy_blink = 6
-                screen.blit(Effect, [1290-tmr*90, -950+tmr*90])
+                screen.blit(Effect, [1290-tmr*90, -950+tmr*90]) #effectの移動
             elif tmr == 26:
                 enemy_life = enemy_life - dmg
                 if enemy_life <= 0:
@@ -349,37 +338,34 @@ def main():
 
         elif idx == 5: # 敵の攻撃                                                                               #変更：前回のミーティング(1/31)をベースに再度修正（2/1)
             draw_battle(screen,font)
-            if  2 <= tmr and tmr <= 6:
-                draw_text(screen,"不正解！！"+ emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN)
-                if tmr %2 == 0:
-                    emy_step = 30
-            elif tmr <= 20:
+            if  2 <= tmr and tmr <= 12:
+                draw_text(screen,"不正解！！"+ emy_name[stage-1]+"の攻撃 ", 220, 120, font, CYAN)                #変更：「不正解」と「敵の攻撃」をまとめて表示 (2/1)
+                emy_step = 30 #敵の画像(y座標)を30ずらす(draw_battle)
+            if  13 <= tmr and tmr <= 23:
                 draw_text(screen, str(stage*10)+"ダメージ受けた!", 220, 120, font, CYAN)
                 emy_step = 0
-            if tmr == 21:
-                pl_life = max(pl_life - stage*10, 0) if pl_life > stage*10 else 0
+            if tmr == 30:
+                pl_life = pl_life - stage*10
                 if pl_life <= 0:
                     idx = 7
                     tmr = 0
                 else:
                     idx = 3
-                    heal = 0
                     tmr = 0
        
         
         elif idx == 6: #勝利"  
            draw_battle(screen,font)
-           if 1 >= tmr and tmr <= 12:
+           if 1 <= tmr and tmr <= 12:
                draw_text(screen,"あなたの勝利 ", 220, 120, font, CYAN)
-           elif tmr <= 15:
                if stage == 5:
                    idx = 9
                    tmr = 0
-               else:
-                   if heal == 0:
-                       pl_life = min(pl_life + 10, pl_lifemax) if pl_life < 90 else pl_lifemax 
-                       heal = 1
-                   
+               else:   
+                   if pl_life <= 90:
+                       pl_life = pl_life + 10
+                   else:
+                       pl_life = pl_lifemax
            elif tmr <= 27:
                draw_text(screen,"扉のカギを入手しました", 210, 100, font, CYAN)
                screen.blit(key1,(250,150))
