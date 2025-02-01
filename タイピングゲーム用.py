@@ -259,7 +259,6 @@ def main():
                 stage = 1
                 welcome = 20
                 pl_lifemax = 100
-                enemy_lifemax = 10*stage
                 pl_life = pl_lifemax
                 pl_x, pl_y = 5, 8 
                 heal = 0
@@ -298,6 +297,7 @@ def main():
                 draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
             elif tmr <= 17:
                 draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
+                enemy_lifemax = 10*stage
                 enemy_life = enemy_lifemax
             else:
                 idx = 3
