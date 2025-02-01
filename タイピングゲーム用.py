@@ -42,6 +42,7 @@ Enemy4 = pygame.image.load("picture\\enemy lv4 (2).png")
 Enemy5 = pygame.image.load("picture\\enemy lv5 (2).png")
 
 
+
 #変数の宣言
 pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標
 idx = 0  # ゲーム状態
@@ -54,6 +55,7 @@ emy_name =""
 enemy_life = 0
 enemy_lifemax = 10*stage #変更
 emy_blink = 0
+emy_step = 0
 emy_x = 0 
 emy_y = 0
 dmg_eff = 0
@@ -137,6 +139,7 @@ def draw_floor(screen):
             if x == pl_x and y == pl_y:
                 screen.blit(player, (X, Y))
 
+
 def draw_text(screen, text, x, y, font, color):
     """テキストの描画"""
     surface = font.render(text, True, color)
@@ -154,7 +157,6 @@ def draw_story(screen, font): #あらすじを画面に表示する関数
         for i, line in enumerate(ending_text):
             draw_text(screen, line, 60, 100 + i * 50, font, WHITE)
         
-
 
 def draw_bar(screen, x, y, width, height, current, maximum):
     ratio =  current/ maximum #変更
@@ -174,10 +176,8 @@ def draw_para(screen, font):    # プレイヤーの能力を表示
     draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
 
 
-
 def draw_battle(screen, font):
-    """戦闘画面の描画"""
-    global emy_blink, dmg_eff,enemies,stage
+    global emy_blink, dmg_eff, enemies, stage, enemy_life, emy_step
     bx = 0
     by = 60
     if dmg_eff > 0:
@@ -187,9 +187,11 @@ def draw_battle(screen, font):
     screen.blit(btlbg, [bx, by])
     enemy = enemies[stage-1]
     rect_enemy = enemy.get_rect()
-    rect_enemy.center = (385, 380)
-    screen.blit(enemy, rect_enemy.topleft)
+    rect_enemy.center = (385, 350 + emy_step)
     draw_bar(screen, 280, 560, 200, 10, enemy_life, enemy_lifemax)
+    
+    if enemy_life > 0 and emy_blink%2 == 0:
+        screen.blit(enemy, rect_enemy.topleft)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
     for i in range(10): # 戦闘メッセージの表示
@@ -201,7 +203,8 @@ def new_target():
     target = random.choice(list_word)
     answer = target                                                            #130 12:55　たかひろ改修
     check = 0
-    
+
+
 def handle_user_input(event):
     """PygameのKEYDOWNイベントで文字入力を処理"""
     global user_input
@@ -211,7 +214,7 @@ def handle_user_input(event):
         None
     else:
        user_input += event.unicode                                                                        # 直接文字を追加（日本語IMEを使う場合はシステム設定
-       #たかひろが改修130 12:33
+
 
 def check_answer():
     """入力が正しいか確認"""
@@ -223,12 +226,11 @@ def check_answer():
         
         
 def main():
-    global idx, tmr, pl_x, pl_y,pl_life, pl_lifemax, enemy_life, dmg
+    global idx, tmr, pl_x, pl_y,pl_life, pl_lifemax, enemy_life, dmg, emy_step, emy_blink
     global target,answer, user_input, check, key, stage
     pygame.init()
     pygame.display.set_caption("Typing Game")
-    screen = pygame.display.set_mode((770, 700))
-    #ディスプレイのサイズ
+    screen = pygame.display.set_mode((770, 700)) #ディスプレイのサイズ
     clock = pygame.time.Clock()
     font = pygame.font.Font("ipaexm.ttf", 40)
     user_input=""
@@ -287,7 +289,6 @@ def main():
                     idx = 1
                     tmr = 0
                 
-                
 
         elif idx == 2:#戦闘画面
             draw_battle(screen, font)
@@ -327,13 +328,13 @@ def main():
             draw_battle(screen,font)
             if  2 <= tmr and tmr <= 12:
                 draw_text(screen, "正解", 220, 200, font, CYAN)
-                dmg = len(target) #変更                                              #mojisuuはタイピングの記述がないため仮置き
+                dmg = len(target)
             elif tmr <= 20:
                 screen.blit(Effect, [385-tmr*120, 150+tmr*120])
                 emy_blink = 5
                 draw_text(screen, f"{dmg}のダメージ!", 220, 200, font, CYAN)
             else:
-                enemy_life = enemy_life - dmg #変更
+                enemy_life = enemy_life - dmg
                 if enemy_life <= 0:
                     enemy_life = 0
                     idx = 6
