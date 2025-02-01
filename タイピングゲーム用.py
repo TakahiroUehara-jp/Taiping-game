@@ -325,13 +325,13 @@ def main():
 
         elif idx == 4: # プレイヤーの攻撃
             draw_battle(screen,font)
-            if tmr <= 10:
-                draw_text(screen, "正解", 220, 300, font, WHITE)
+            if  2 <= tmr and tmr <= 12:
+                draw_text(screen, "正解", 220, 200, font, CYAN)
                 dmg = len(target) #変更                                              #mojisuuはタイピングの記述がないため仮置き
-            if 11 <= tmr and tmr <= 40:
-                screen.blit(Effect, [700-tmr*120, -100+tmr*120])
+            elif tmr <= 20:
+                screen.blit(Effect, [385-tmr*120, 150+tmr*120])
                 emy_blink = 5
-                draw_text(screen, "{dmg}のダメージ!", 220, 300, font, CYAN)
+                draw_text(screen, f"{dmg}のダメージ!", 220, 200, font, CYAN)
             else:
                 enemy_life = enemy_life - dmg #変更
                 if enemy_life <= 0:
