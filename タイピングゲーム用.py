@@ -40,26 +40,6 @@ key4 = pygame.image.load("picture/key4.png")
 
 Effect = pygame.image.load("picture/effect-attack.png")
 
-#変数の宣言
-pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標                        #変更：全クリア後の初期位置のバグ修正のため（2/1)
-idx = 0  # ゲーム状態
-tmr = 0  # タイマー
-stage = 1
-welcome = 0
-key = 0
-check = 0
-emy_name =""
-enemy_life = 0
-enemy_lifemax = 10*stage #変更
-emy_blink = 0
-emy_x = 0 
-emy_y = 0
-dmg_eff = 0
-dmg = 0
-
-pl_lifemax = 100
-pl_life = 0
-
 Enemies = [Enemy1,Enemy2,Enemy3,Enemy4,Enemy5]#floor 小さい画像
 enemies = [enemy1,enemy2,enemy3,enemy4,enemy5]#battle 大きい画像
 emy_name = ["スライム","コウモリ", "死神","騎士","魔王" ]  
@@ -70,6 +50,30 @@ user_input=""
 list_word = ["apple","book","cat","dog","egg","fish","grape","house",
              "ice","juice","chocolate","lemon","moon","university",
              "orange","pencil","queen","rabbit","star","tree"]
+
+#あらすじテキスト
+story_text = [
+    "コトバ王国は平和なコトバで満ちあふれ、そこに住む人々は",
+    "いつも笑顔で平穏な暮らしを送っていた。",
+    "しかし100年前に復活した魔王バリーによって",
+    "コトバ王国は侵略の脅威にさらされていた。",
+    "魔王バリーはかつての先代魔王ゾーゴンの封印を解き、",
+    "完全体としての魔王になろうとしている。",
+    "勇者コトノハマモルは生まれ育ったコトバ王国を守るため、",
+    "魔王討伐を胸に誓い旅立つのであった。"
+]
+    
+
+ending_text =[
+    "勇者コトノハマモルは魔王バリーを倒し、",
+    "コトバ王国はかつての平和を取り戻した。",
+    "マモルは王国の民から祝福を受けた。",
+    "しかし勇者は冒険を続ける。",
+    "いつ復活するか分からない魔王に備え、勇者は旅を続ける。",
+    "",
+    "GAME CLEAR!!おめでとう!!"
+    "Press SPACE"
+    ]
 
 
 # フロアマップ（0: 床, 1: 壁, 2: ドア, 3: 敵）
@@ -89,8 +93,9 @@ floor_map = [
 def draw_floor(screen):
     global stage,Enemy,key
     Enemy = Enemies[stage-1]
-    for y, row in enumerate(floor_map):
-        for x, tile in enumerate(row):
+    rect_Enemy = Enemy.get_rect()                                               #Enemyというオブジェクトの位置と大きさを取得
+    for y, row in enumerate(floor_map):                                         #floor_mapの各要素にインデックス番号を付ける
+        for x, tile in enumerate(row):                                          #各行の中の各タイル（要素）を処理
             X, Y = x * 70, y * 70
             if tile == 0:
                 screen.blit(floor, (X, Y))
@@ -98,10 +103,11 @@ def draw_floor(screen):
                 screen.blit(wall, (X, Y))
             elif tile == 2:
                 screen.blit(door, (X, Y))
-            #敵の描画
+            #敵の描画　
             if x == 5 and y == 2:
                 if key == 0:
-                    screen.blit(Enemy, (X, Y))
+                    rect_Enemy.center = (X + 35, Y + 35)
+                    screen.blit(Enemy, rect_Enemy.topleft)                     #画像の左上の座標変更
                 else:
                     screen.blit(floor, (X, Y))
             # プレイヤーの描画
@@ -113,6 +119,19 @@ def draw_text(screen, text, x, y, font, color):
     """テキストの描画"""
     surface = font.render(text, True, color)
     screen.blit(surface, (x, y))
+
+
+def draw_story(screen, font): #あらすじを画面に表示する関数
+    global stage
+    screen.fill(BLACK)  # 背景を黒で塗りつぶす色とかはあとで調整
+    font = pygame.font.Font("ipaexg.ttf", 25)
+    if stage == 1:
+        for i, line in enumerate(story_text):
+            draw_text(screen, line, 60, 100 + i * 50, font, WHITE)  # テキストを1行ずつ表示
+    if stage == 5:
+        for i, line in enumerate(ending_text):
+            draw_text(screen, line, 60, 100 + i * 50, font, WHITE)
+        
 
 
 def draw_bar(screen, x, y, width, height, current, maximum):
@@ -130,7 +149,7 @@ def draw_bar(screen, x, y, width, height, current, maximum):
 
 
 def draw_para(screen, font):    # プレイヤーの能力を表示
-    draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)
+    draw_text(screen, f"HP: {pl_life}/{pl_lifemax}", 20, 20, font, WHITE)   #波かっこで囲まれた変数名や式があると実行時に置換
 
 
 
@@ -139,13 +158,11 @@ def draw_battle(screen, font):
     global emy_blink, dmg_eff,enemies,stage
     bx = 0
     by = 60
-    if dmg_eff > 0:
-        dmg_eff = dmg_eff - 1
-        bx = random.randint(-20, 20)
-        by = random.randint(-10, 10)
     screen.blit(btlbg, [bx, by])
     enemy = enemies[stage-1]
-    screen.blit(enemy, [250, 320])
+    rect_enemy = enemy.get_rect()
+    rect_enemy.center = (385, 380)
+    screen.blit(enemy, rect_enemy.topleft)
     draw_bar(screen, 280, 560, 200, 10, enemy_life, enemy_lifemax)
     if emy_blink > 0:
         emy_blink = emy_blink - 1
@@ -154,17 +171,17 @@ def draw_battle(screen, font):
     draw_para(screen, font) # 主人公の能力を表示
 
 def new_target():
-    global target, answer,user_input, check
+    global target, answer
     target = random.choice(list_word)
     answer = target                                                            #130 12:55　たかひろ改修
     check = 0
     
 def handle_user_input(event):
     """PygameのKEYDOWNイベントで文字入力を処理"""
-    global check, user_input, target
+    global user_input
     if event.key == pygame.K_BACKSPACE:
         user_input = user_input[:-1]                                         # 文字を削除
-    if event.key==K_RETURN: #変更
+    if event.key==K_RETURN: 
         None
     else:
        user_input += event.unicode                                                                        # 直接文字を追加（日本語IMEを使う場合はシステム設定
@@ -185,14 +202,9 @@ def main():
     pygame.display.set_caption("Typing Game")
     screen = pygame.display.set_mode((770, 700))
     
-    #変更 #targetが更新されない原因これだと思う
-    # 新しい単語を選択
-    #target = random.choice(dic_word)  
-    #new_target()
-    
     #ディスプレイのサイズ
     clock = pygame.time.Clock()
-    font = pygame.font.Font("ipaexm.ttf", 40)
+    font = pygame.font.Font("ipaexg.ttf", 40)
     user_input=""
 
     while True:
@@ -217,11 +229,9 @@ def main():
             if pygame.key.get_pressed()[K_SPACE]:
                 stage = 1
                 welcome = 20
-                pl_x, pl_y = 5, 8                                                       #変更：全クリア後の初期位置のバグ修正のため（2/1)
-              
                 pl_lifemax = 100
                 pl_life = pl_lifemax
-                idx = 1
+                idx = 10
                 tmr = 0
 
 
@@ -256,7 +266,7 @@ def main():
                 draw_text(screen, "敵に遭遇!", 300, 200, font, WHITE)
             elif tmr <= 17:
                 draw_text(screen, emy_name[stage-1]+"を倒せ!", 220, 200, font, WHITE)
-                enemy_life = enemy_lifemax #変更
+                enemy_life = enemy_lifemax 
             else:
                 idx = 3
                 tmr = 0
@@ -288,7 +298,7 @@ def main():
             draw_battle(screen,font)
             if tmr <= 10:
                 draw_text(screen, "正解", 220, 300, font, WHITE)
-                dmg = len(target) #変更                                                #mojisuuはタイピングの記述がないため仮置き
+                dmg = len(target) #変更                                              #mojisuuはタイピングの記述がないため仮置き
             if 11 <= tmr and tmr <= 40:
                 screen.blit(Effect, [700-tmr*120, -100+tmr*120])
                 emy_blink = 5
@@ -320,12 +330,12 @@ def main():
                     idx = 3
                     tmr = 0
        
-        #変更
+        
         elif idx == 6: #勝利"  
            draw_battle(screen,font)
            if 1 <= tmr and tmr <= 12:
                draw_text(screen,"あなたの勝利 ", 220, 120, font, CYAN)
-               if stage == 5: #変更
+               if stage == 5:
                    idx = 9
                    tmr = 0
                else:   
@@ -336,7 +346,7 @@ def main():
            elif tmr <= 27:
                draw_text(screen,"扉のカギを入手しました", 210, 100, font, CYAN)
                screen.blit(key1,(250,150))
-               key = 1 #変更
+               key = 1 
            else:
                idx = 1
                tmr = 0
@@ -347,7 +357,7 @@ def main():
             draw_battle(screen,font)
             if tmr <= 12:
                 draw_text(screen,"やられてしまった", 220, 120, font, CYAN)
-            else:#変更
+            else:
                 idx = 8
                 tmr = 0
         
@@ -361,17 +371,26 @@ def main():
                 idx = 0
                 tmr = 0
                     
-        #変更
+        
         elif idx == 9: #クリア
-            draw_battle(screen,font)
+            draw_story(screen,font)
             keys = pygame.key.get_pressed()
-            if tmr <= 30:
-                draw_text(screen,"世界の平和を守った",220,120,font,CYAN)
-            else:
-                idx = 0
-                tmr = 0
-
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 0
+                    tmr = 0
             
+        elif idx == 10:
+            draw_story(screen,font)
+            keys = pygame.key.get_pressed()
+            if tmr >= 14:
+                draw_text(screen,"Press SPACE to next",320,650,font,CYAN)
+                if pygame.key.get_pressed()[K_SPACE]:
+                    idx = 1
+                    tmr = 0
+                
+                
         pygame.display.update()
         clock.tick(7)
 
