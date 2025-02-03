@@ -44,7 +44,7 @@ Enemy5 = pygame.image.load("picture\\enemy lv5 (2).png")
 
 
 #変数の宣言
-pl_x, pl_y = 0, 0  # プレイヤーの初期タイル座標
+pl_x, pl_y = 5, 8  # プレイヤーの初期タイル座標
 idx = 0  # ゲーム状態
 tmr = 0  # タイマー
 stage = 1
